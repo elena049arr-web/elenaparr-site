@@ -1,0 +1,1429 @@
+/* =========================================================
+   ELENA PARR — DESIGN SYSTEM TOKENS
+   ========================================================= */
+:root {
+  /* Color */
+  --color-bg: #FAF5EC;
+  --color-bg-alt: #F3ECDF;
+  --color-ink: #2E2A24;
+  --color-ink-soft: #5B5548;
+  --color-accent-purple: #6B4E71;
+  --color-accent-gold: #C98A3E;
+  --color-accent-teal: #3F7A78;
+  --color-border: rgba(46, 42, 36, 0.12);
+  --color-card-bg: #FFFDF9;
+
+  /* Type */
+  --font-display: "Passion One", sans-serif;
+  --font-body: "Work Sans", sans-serif;
+
+  /* Spacing scale (8px base) */
+  --sp-1: 0.5rem;
+  --sp-2: 1rem;
+  --sp-3: 1.5rem;
+  --sp-4: 2rem;
+  --sp-6: 3rem;
+  --sp-8: 4rem;
+  --sp-12: 6rem;
+  --sp-16: 8rem;
+
+  /* Radius & shadow */
+  --radius-art: 30px;
+  --radius-card: 20px;
+  --radius-pill: 999px;
+  --shadow-soft: 0 10px 30px rgba(46, 42, 36, 0.10), 0 2px 8px rgba(46, 42, 36, 0.06);
+  --shadow-lift: 0 18px 40px rgba(46, 42, 36, 0.16), 0 4px 12px rgba(46, 42, 36, 0.08);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 0.3s;
+  --dur-med: 0.5s;
+  --dur-slow: 0.9s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================
+   RESET & BASE
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden; /* full-bleed elements (100vw technique, e.g. the film reel) can otherwise cause the whole page to scroll sideways */
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+h1, h2, h3 { margin: 0; }
+p { margin: 0 0 var(--sp-2); }
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--color-ink);
+  color: var(--color-bg);
+  padding: var(--sp-1) var(--sp-2);
+  z-index: 1000;
+}
+.skip-link:focus {
+  left: var(--sp-2);
+  top: var(--sp-2);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent-teal);
+  outline-offset: 3px;
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--color-accent-teal);
+  margin-bottom: var(--sp-1);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  margin-bottom: var(--sp-3);
+}
+
+.section-intro {
+  max-width: 62ch;
+  font-size: 1.05rem;
+  color: var(--color-ink-soft);
+  margin-bottom: var(--sp-8);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.85em 1.8em;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  text-decoration: none;
+}
+.btn--primary {
+  background: var(--color-accent-purple);
+  color: #fff;
+  box-shadow: var(--shadow-soft);
+}
+.btn--primary:hover {
+  background: #593f5e;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+
+/* =========================================================
+   HEADER / NAV
+   ========================================================= */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(250, 245, 236, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.site-header.is-scrolled {
+  border-bottom-color: var(--color-border);
+  box-shadow: 0 4px 16px rgba(46,42,36,0.05);
+}
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--sp-2) var(--sp-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo-mark {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 1.35rem;
+  text-decoration: none;
+  color: var(--color-ink);
+}
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+.primary-nav a {
+  text-decoration: none;
+  color: var(--color-ink-soft);
+  position: relative;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.primary-nav a:hover { color: var(--color-ink); }
+.nav-cta {
+  background: var(--color-ink);
+  color: var(--color-bg) !important;
+  padding: 0.5em 1.2em;
+  border-radius: var(--radius-pill);
+  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.nav-cta:hover { background: var(--color-accent-purple); transform: translateY(-2px); }
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--sp-1);
+}
+.nav-toggle span {
+  width: 24px;
+  height: 2px;
+  background: var(--color-ink);
+  transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero {
+  position: relative;
+  display: block;
+  padding-top: 0;
+  overflow: hidden;
+}
+
+.hero-bg-illustration {
+  position: relative;
+  z-index: 0;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 2rem; /* nudges the illustration down — starting estimate, likely needs live fine-tuning since the wider export shifted vertical framing; adjust this one value if it's still off */
+  display: grid;
+  justify-items: center;
+  pointer-events: none;
+}
+.hero-bg-illustration img {
+  grid-area: 1 / 1; /* both images stack in the same cell — later in DOM paints on top */
+  width: 100%; /* full-bleed — was capped at 1500px, which left margins on a wider image */
+  height: auto;
+  opacity: 1;
+  display: block;
+}
+/* Color layer sits underneath the line art (see DOM order) and is
+   revealed with a one-time directional wipe as the visitor scrolls away
+   from the hero — triggered once via IntersectionObserver (see main.js),
+   then locked in permanently rather than continuously scroll-tied. This
+   was a deliberate choice: tying it to scroll both ways risked the color
+   "retreating" if someone scrolls back up to reread something, which
+   would read as a glitch rather than a reveal. A permanent one-time
+   unlock also matches the same narrative logic as the achievement
+   popups elsewhere on the site — things unlock as you engage and stay
+   unlocked, rather than introducing a third, reversible behavior
+   alongside "always responsive" (ambient light, wheel, film reel) and
+   "one-time unlock" (achievements). */
+.hero-sketch-color {
+  clip-path: inset(0 0 100% 0); /* fully hidden, clipped from the bottom — reveals top-to-bottom */
+  transition: clip-path 1.8s var(--ease-out);
+}
+.hero-sketch-color.is-revealed {
+  clip-path: inset(0 0 0% 0);
+}
+.no-js .hero-sketch-color, .reduced-motion .hero-sketch-color {
+  clip-path: inset(0 0 0% 0); /* just show it fully, no wipe animation */
+  transition: none;
+}
+
+.hero-bee-field { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.bee { position: absolute; width: 48px; opacity: 0.9; }
+.bee-a { top: 14%; left: 8%; }
+.bee-b { top: 20%; right: 10%; width: 40px; }
+
+.hero-content {
+  position: absolute;
+  z-index: 3;
+  top: calc(72px + 1rem);
+  left: calc(var(--sp-4) + 6rem);
+  width: fit-content;
+  max-width: min(90vw, 780px);
+  text-align: left;
+  background: rgba(250, 245, 236, 0.45);
+  border-radius: var(--radius-card);
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+}
+
+.hero-writing {
+  position: relative;
+  width: min(90vw, 760px);
+  height: clamp(160px, 24vw, 300px);
+  margin: 0 0 -0.5rem;
+  /* -5.36% measured directly from the source video frame: the handwritten
+     ink starts 5.36% in from the video's own left edge (baked into the
+     recording), which object-position:left can't correct on its own since
+     it repositions the whole frame, not the ink within it. This keeps the
+     ink visually flush with the tagline text below regardless of the
+     pop-in transform below (translateX stays constant in both states). */
+  opacity: 0;
+  transform: translateX(-5.36%) translateY(0.35em) scale(0.92);
+  transition: opacity 650ms var(--ease-out), transform 650ms var(--ease-out);
+}
+.hero-writing.is-revealed {
+  opacity: 1;
+  transform: translateX(-5.36%) translateY(0) scale(1);
+}
+.no-js .hero-writing, .reduced-motion .hero-writing {
+  opacity: 1;
+  transform: translateX(-5.36%);
+  transition: none;
+}
+.hero-clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+  opacity: 1;
+  mix-blend-mode: multiply;
+  /* Feathers the video's rectangular edge so the multiply-blend boundary
+     fades out gradually into the page instead of stopping at a hard,
+     visible line — the recording's "white" is never quite pure white,
+     which is what made the edge noticeable before. */
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
+              linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
+                       linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-composite: source-in;
+}
+.hero-clip-final {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
+              linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
+                       linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  transition: opacity 200ms var(--ease-out);
+}
+.hero-clip-final.is-visible { opacity: 1; }
+.hero-clip.is-hidden { opacity: 0; }
+
+.hero-static-fallback {
+  /* visually hidden always now — the final still image serves this purpose for everyone,
+     but real text stays in the DOM for screen readers / SEO */
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.no-js .hero-clip, .reduced-motion .hero-clip { display: none; }
+.no-js .hero-clip-final, .reduced-motion .hero-clip-final {
+  position: static;
+  opacity: 1;
+  width: 100%;
+  height: auto;
+}
+
+.hero-tagline {
+  font-size: 1.05rem;
+  color: var(--color-ink-soft);
+  max-width: 52ch;
+  margin: 0 0 var(--sp-3);
+}
+/* Word-by-word pop-in reveal — each word is wrapped in a span by JS
+   (setupHeroTaglineReveal in main.js) with its own transition-delay for
+   the stagger. Falls back to always-visible for no-js/reduced-motion. */
+.hero-tagline .reveal-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.35em) scale(0.92);
+  transition: opacity 650ms var(--ease-out), transform 650ms var(--ease-out);
+}
+.hero-tagline.is-revealed .reveal-word {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.no-js .hero-tagline .reveal-word,
+.reduced-motion .hero-tagline .reveal-word {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+.hero-tagline a {
+  color: var(--color-accent-purple);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid var(--color-accent-gold);
+}
+
+.hero-scroll-cue {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  text-decoration: none;
+  color: var(--color-ink-soft);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.scroll-dot { animation: scrollBob 1.8s ease-in-out infinite; }
+@keyframes scrollBob {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(6px); opacity: 0.4; }
+}
+
+@media (max-width: 700px) {
+  .hero-content { left: var(--sp-3); max-width: calc(100vw - 3rem); }
+  .hero-writing { height: clamp(110px, 34vw, 180px); }
+}
+
+/* =========================================================
+   SECTIONS (shared)
+   ========================================================= */
+.section {
+  padding: var(--sp-16) var(--sp-4);
+  position: relative;
+}
+.section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2; /* sits above .ambient-light (z-index:1) so real content is never covered by it */
+}
+.section--publications { background: var(--color-bg); }
+.section--fineart { background: var(--color-bg-alt); }
+.section--edu { background: var(--color-bg); }
+.section--branding { background: var(--color-bg-alt); }
+.section--stellina {
+  background: linear-gradient(180deg, var(--color-bg) 0%, #F1E6EF 100%);
+  text-align: center;
+}
+.section--contact { background: var(--color-ink); color: var(--color-bg); }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
+
+/* =========================================================
+   PUBLICATIONS — archive cards
+   ========================================================= */
+/* --- Publications cards: cover + divider + bold title/year + vertical spine label ---
+   Proportions measured directly from Elena's Canva mockup. Sized down ~8%
+   from the previous pass per feedback ("a little smaller, 5-10%"). The
+   Ivory Butterflies side label sits in normal flex flow next to its cover
+   (not absolutely positioned/overflowing) so the whole two-book composition
+   stays inside .section-inner's centered 1200px column — equal margins
+   both sides — rather than the label spilling into the outer page margin. */
+.archive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 3.5rem;
+}
+@media (min-width: 900px) {
+  .archive { grid-template-columns: 2.27fr 1fr; }
+}
+.pub-card {
+  display: flex;
+  flex-direction: column;
+  /* stretch (grid default) is intentional here: book 2's cover crops via
+     object-fit:cover to exactly match book 1's natural total height
+     (image + divider + title/year), rather than showing its full
+     uncropped height — this is what makes the shared bottom line work. */
+}
+.pub-card:nth-child(odd) {
+  justify-content: flex-end; /* anchors content to the bottom of the stretched cell, guaranteeing the footer's bottom border lands on the shared datum line even if stretch leaves a hair of slack */
+}
+.pub-card-media {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 2px solid var(--color-ink);
+  /* no padding, no background — the cover is the card, not a photo in a mat */
+}
+/* Publications needs to fit heading + intro + both books in one screen
+   without scrolling, per the mockup — the global section padding/heading
+   spacing is too generous for that here specifically, so it's tightened
+   just for this section rather than changed everywhere. */
+.section--publications {
+  padding-top: var(--sp-6);
+  padding-bottom: var(--sp-8);
+}
+.section--publications .section-title { margin-bottom: var(--sp-1); }
+.section--publications .section-intro { margin-bottom: var(--sp-4); }
+
+.pub-card-media img {
+  width: 100%;
+  height: auto;
+  max-height: 230px;
+  object-fit: contain; /* the front+back spread already matches its box, nothing to crop */
+}
+/* Portrait single cover (even card, Ivory Butterflies): image + side label
+   sit side by side in normal flex flow, both counted within the grid
+   column's own width — this is what keeps the whole thing centered. */
+.pub-card:nth-child(even) {
+  height: 100%;
+}
+.pub-card:nth-child(even) .pub-card-media {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+.pub-card:nth-child(even) .pub-card-media img {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+  object-position: center top; /* favor the top of the cover over the bottom when cropping */
+}
+.pub-card-footer {
+  margin-top: 1.4rem;
+  padding-bottom: 1.4rem;
+  border-bottom: 2px solid var(--color-ink); /* closes the bottom of the text block — shared datum line */
+}
+.pub-card-footer h3.pub-card-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(1.45rem, 3vw, 2.45rem); /* oversized editorial headline, not a card label */
+  line-height: 1.05;
+  margin-bottom: 0.4rem;
+}
+.pub-card-year {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(0.85rem, 1.45vw, 1rem);
+  color: var(--color-ink-soft);
+  margin: 0;
+}
+.pub-card-spine {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap; /* keep title+year in a single column, never wrap to a second one */
+  margin: 0; /* reset default <p> margin */
+  display: none; /* Ivory Butterflies only, shown via nth-child(even) below */
+}
+.pub-card-spine-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-ink-soft);
+  margin-inline-start: 0.5rem; /* gap after year, before title — vertical-rl's block axis is horizontal, so inline-start is the vertical gap we actually want */
+}
+.pub-card-spine-year {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-ink-soft);
+}
+.pub-card { position: relative; }
+/* Ivory Butterflies side label: shown once there's room for it (900px+),
+   sitting in-flow beside its cover — not absolutely positioned — so the
+   grid column's own width includes it and the whole spread stays centered. */
+@media (min-width: 900px) {
+  .pub-card:nth-child(even) {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .pub-card:nth-child(even) .pub-card-spine {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
+    margin-left: 1.5rem;
+  }
+  .pub-card:nth-child(even) .pub-card-footer {
+    display: none;
+  }
+}
+@media (min-width: 1500px) {
+  .pub-card:nth-child(even) .pub-card-spine {
+    border-left: 2px solid var(--color-ink);
+    border-right: 2px solid var(--color-ink);
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  .pub-card:nth-child(even) .pub-card-spine-title {
+    font-size: clamp(1.1rem, 2vw, 1.55rem);
+    color: var(--color-ink);
+    margin-inline-start: 0.75rem;
+  }
+  .pub-card:nth-child(even) .pub-card-spine-year {
+    font-size: clamp(1rem, 1.85vw, 1.4rem); /* much closer to title's weight, per feedback */
+    color: var(--color-ink);
+  }
+}
+
+
+/* =========================================================
+   THE ARCHIVE — full editorial interactive crossword feature
+   ========================================================= */
+.the-archive {
+  margin-top: var(--sp-16);
+  padding: var(--sp-16) var(--sp-4);
+  text-align: center;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.the-archive-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  margin-bottom: var(--sp-2);
+}
+.the-archive-intro {
+  color: var(--color-ink-soft);
+  margin-bottom: var(--sp-6);
+}
+
+.the-archive-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  /* Desktop: editorial split-screen, per Elena's mockup — this is the
+     source of truth for this layout, not a centered-widget composition.
+     Clues left, crossword right, roughly equal visual weight, vertically
+     aligned so they read as two halves of one interaction. */
+  .the-archive-body {
+    display: grid;
+    grid-template-columns: minmax(300px, 420px) 1fr;
+    align-items: center;
+    gap: var(--sp-12);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .the-archive-body .crossword-clues { order: 1; } /* left, even though it's second in DOM (crossword is announced first for screen readers) */
+  .the-archive-body .crossword-puzzle { order: 2; margin: 0; justify-self: center; } /* right */
+}
+
+/* --- puzzle grid --- */
+.crossword-puzzle {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto var(--sp-8);
+}
+.cwx-cell {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+}
+.cwx-blank { visibility: hidden; }
+.cwx-num {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.6rem;
+  line-height: 1;
+  color: var(--color-accent-purple);
+  pointer-events: none;
+  z-index: 2;
+}
+.cwx-input {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(122, 104, 80, 0.38);
+  background: #F4ECDC;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(1rem, 2.6vw, 1.3rem);
+  color: var(--color-ink);
+  border-radius: 11px;
+  padding: 0;
+  box-shadow:
+    0 5px 12px rgba(46, 42, 36, 0.16),
+    0 1px 2px rgba(46, 42, 36, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  transition: box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.cwx-input:hover {
+  transform: translateY(-4px) scale(1.16);
+  box-shadow:
+    0 14px 26px rgba(46, 42, 36, 0.24),
+    0 3px 8px rgba(46, 42, 36, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border-color: rgba(107, 78, 113, 0.4);
+  z-index: 5;
+}
+.cwx-input:focus {
+  outline: none;
+  border-color: var(--color-accent-purple);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 10px 20px rgba(46, 42, 36, 0.20),
+    0 0 0 3px rgba(107, 78, 113, 0.12);
+}
+.cwx-cell.is-active-word .cwx-input {
+  border-color: rgba(107, 78, 113, 0.45);
+}
+.cwx-cell.is-correct .cwx-input {
+  background: rgba(63, 122, 120, 0.14);
+  border-color: var(--color-accent-teal);
+  color: var(--color-accent-teal);
+  box-shadow: 0 2px 6px rgba(63, 122, 120, 0.12);
+  transform: none;
+}
+@keyframes cwxCelebrate {
+  0% { box-shadow: 0 5px 12px rgba(46,42,36,0.16), inset 0 1px 0 rgba(255,255,255,0.65); transform: scale(1); }
+  45% { box-shadow: 0 0 0 7px rgba(63,122,120,0.28), 0 6px 14px rgba(46,42,36,0.14); transform: scale(1.08); }
+  100% { box-shadow: 0 2px 6px rgba(63,122,120,0.12); transform: scale(1); }
+}
+.cwx-input.is-celebrating {
+  animation: cwxCelebrate 550ms var(--ease-out);
+}
+
+/* --- clues: editorial footnotes, styled like a subtle newspaper column --- */
+.crossword-clues {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-8);
+  width: 100%;
+  max-width: 620px;
+  text-align: left;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--sp-6) var(--sp-6);
+}
+.crossword-clues-col { flex: 1 1 0; }
+.crossword-clues-heading {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  color: var(--color-ink);
+  margin-bottom: var(--sp-3);
+  padding-bottom: var(--sp-1);
+  border-bottom: 2px solid var(--color-ink);
+  opacity: 0.9;
+}
+.crossword-clues-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.crossword-clues-list li {
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--color-ink-soft);
+  opacity: 0.78;
+  line-height: 1.5;
+  transition: color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+.crossword-clues-list li strong {
+  color: var(--color-ink);
+  font-weight: 600;
+  opacity: 0.95;
+  margin-right: 0.4em;
+}
+.crossword-clues-list li.is-solved {
+  color: var(--color-accent-teal);
+  opacity: 0.9;
+  text-decoration: line-through;
+  text-decoration-color: rgba(63,122,120,0.35);
+}
+
+@media (max-width: 600px) {
+  .crossword-clues { flex-direction: column; gap: var(--sp-6); padding: var(--sp-4); }
+  /* Safety per Elena's spec: bias slightly left rather than perfectly
+     centered, so the puzzle can never end up straddling the edge of the
+     viewport with a tile clipped off. */
+  .crossword-puzzle { margin: 0 auto 0 0; max-width: min(94vw, 480px); }
+}
+
+/* --- achievement overlay ---
+   position:absolute (not fixed) — see AMBIENT RAINBOW-LIGHT REFLECTION
+   comment above for why: GSAP/ScrollTrigger applies a transform to
+   <body>, which breaks position:fixed for ALL descendants (they end up
+   positioned relative to the transformed ancestor's document position
+   instead of the viewport). This was causing the popup to render up near
+   Publications/Achievements — where this element actually sits in the
+   DOM — instead of centered over whatever the visitor is currently
+   looking at, and focusing the close button then auto-scrolled the page
+   there. Top is set via JS (openAchievement in main.js) at the moment
+   the modal opens, so it always matches the current scroll position. */
+.achievement-overlay {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgba(46, 42, 36, 0.55);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-med) var(--ease-out);
+}
+.achievement-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.achievement-panel {
+  position: relative;
+  background: var(--color-bg);
+  border-radius: var(--radius-card);
+  max-width: 560px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: var(--sp-8) var(--sp-6) var(--sp-6);
+  text-align: left;
+  box-shadow: var(--shadow-lift);
+  transform: scale(0.9);
+  transition: transform var(--dur-med) var(--ease-out);
+}
+.achievement-overlay.is-open .achievement-panel {
+  transform: scale(1);
+}
+.achievement-close {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-bg-alt);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--color-ink-soft);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.achievement-close:hover { background: var(--color-border); }
+.achievement-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent-teal);
+  margin-bottom: var(--sp-1);
+}
+.achievement-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 2rem;
+  margin-bottom: var(--sp-3);
+}
+.achievement-image {
+  width: 100%;
+  aspect-ratio: 16/10;
+  border-radius: var(--radius-art);
+  overflow: hidden;
+  margin-bottom: var(--sp-3);
+  background: var(--color-bg-alt);
+}
+.achievement-image img { width: 100%; height: 100%; object-fit: cover; }
+.achievement-body {
+  color: var(--color-ink-soft);
+  line-height: 1.6;
+}
+
+/* =========================================================
+   FINE ART — stationary film-reel frame + continuously
+   scrolling artwork belt clipped inside it
+   ========================================================= */
+.film-reel {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  max-width: none;
+  margin-top: var(--sp-4); /* extra breathing room above, so the hover-zoom has clear room to expand into */
+  margin-bottom: var(--sp-12); /* was sp-8 — more room below too, same reason */
+  height: clamp(200px, 25vw, 325px); /* ~25% taller than before, per feedback, so more of each piece is visible even before hover */
+}
+
+/* top/bottom sprocket strips: the same source crop, tiled at native-ish
+   scale (never stretched) so the pattern stays crisp at any width */
+.film-reel-strip {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 28px;
+  background-image: url('../assets/images/film-reel-strip.webp');
+  background-size: auto 28px;
+  background-repeat: repeat-x;
+  z-index: 2;
+}
+.film-reel-strip--top { top: 0; }
+.film-reel-strip--bottom { bottom: 0; transform: scaleY(-1); }
+
+.film-reel-viewport {
+  position: absolute;
+  top: 28px;
+  bottom: 28px;
+  left: 0;
+  width: 100%;
+  overflow: visible; /* NOT overflow-x/-y split — see clip-path below for why */
+  clip-path: inset(-1000px 0px -1000px 0px); /* clips left/right at the box edges (horizontal belt), leaves top/bottom fully open so a hovered piece can scale up without being clipped. overflow-x:hidden + overflow-y:visible looks like it should do this, but per the CSS Overflow spec that combination computes overflow-y as 'auto' — which still clips. clip-path has no such axis-coupling. */
+  background: rgb(33, 35, 34); /* matches the asset's own dark tone so nothing seams */
+}
+
+.film-reel-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: max-content;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-4);
+  /* no CSS animation here — see setupFilmReel in main.js. Motion is
+     scroll-linked rather than autoplaying on its own timer, so it shares
+     the same "responds to you" language as the wheel and ambient light
+     instead of being the one element on autopilot. */
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-reel-track { overflow-x: auto; }
+}
+
+.film-reel-track img {
+  height: 78%;
+  width: auto;
+  object-fit: contain; /* never crop the drawings */
+  flex: 0 0 auto;
+  border-radius: 6px;
+  transform-origin: center;
+  transition: transform 320ms ease-in-out; /* deliberate, cinematic — not a snap */
+  position: relative;
+}
+.film-reel-track img:hover {
+  transform: scale(1.5); /* dialed back further as a safety margin on top of the clip-path fix below */
+  z-index: 5;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+.art-wheel-label {
+  text-align: center;
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  color: var(--color-ink-soft);
+  opacity: 0.65;
+  margin: var(--sp-8) 0 var(--sp-3);
+}
+
+.art-wheel {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: clamp(420px, 44vw, 580px);
+  overflow: hidden;
+}
+.art-wheel-track {
+  position: absolute;
+  inset: 0;
+}
+.art-wheel-piece {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: clamp(170px, 16vw, 260px);
+  aspect-ratio: 3/4;
+  margin: 0;
+  will-change: transform, opacity;
+}
+.art-wheel-piece img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 30%;
+  box-shadow: var(--shadow-lift);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  display: block;
+}
+.art-wheel-piece:hover img {
+  transform: scale(1.14);
+  box-shadow: 0 24px 48px rgba(46,42,36,0.28);
+}
+@media (prefers-reduced-motion: reduce) {
+  .art-wheel { overflow-x: auto; height: auto; padding: var(--sp-4) 0; }
+  .art-wheel-track { position: static; display: flex; gap: var(--sp-3); width: max-content; }
+  .art-wheel-piece { position: static; margin: 0 !important; transform: none !important; opacity: 1 !important; width: 200px; }
+}
+
+/* =========================================================
+   DESIGN FOR LEARNING
+   ========================================================= */
+.edu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+}
+.edu-feature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-card);
+  padding: var(--sp-4);
+}
+.edu-feature img { border-radius: var(--radius-art); }
+.edu-card {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  padding: var(--sp-3);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.edu-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+.edu-card img { border-radius: var(--radius-art); margin-bottom: var(--sp-2); aspect-ratio: 3/4; object-fit: cover; width: 100%; }
+.edu-card h3 { font-weight: 700; margin-bottom: var(--sp-1); }
+.edu-card p { font-size: 0.9rem; color: var(--color-ink-soft); margin: 0; }
+
+@media (max-width: 860px) {
+  .edu-grid { grid-template-columns: 1fr; }
+}
+
+.edu-evidence { margin-top: var(--sp-6); }
+.edu-evidence-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-ink-soft);
+  margin-bottom: var(--sp-2);
+}
+.edu-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--sp-3);
+}
+.edu-evidence-grid img { border-radius: var(--radius-art); box-shadow: var(--shadow-soft); }
+
+/* =========================================================
+   BRANDING
+   ========================================================= */
+.branding-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-8);
+}
+.branding-hero-copy {
+  flex: 1 1 420px;
+  max-width: 560px;
+}
+.branding-hero-copy .section-intro { margin-bottom: 0; }
+
+.brand-swatches {
+  display: flex;
+  gap: var(--sp-3);
+  flex: 0 0 auto;
+}
+.brand-swatch-col {
+  position: relative;
+  width: 108px;
+  height: 420px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.brand-swatch-track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-4);
+  width: 100%;
+}
+.brand-swatch-col--up .brand-swatch-track { animation: swatchScrollUp 26s linear infinite; }
+.brand-swatch-col--down .brand-swatch-track { animation: swatchScrollDown 26s linear infinite; }
+@keyframes swatchScrollUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+@keyframes swatchScrollDown {
+  from { transform: translateY(-50%); }
+  to { transform: translateY(0); }
+}
+.brand-swatch-col:hover {
+  transform: scale(1.02); /* moved here from the track — the track's own transform is owned by the scroll animation and can't safely hold a second, separate transform value at the same time */
+}
+.brand-swatch-col:hover .brand-swatch-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-swatch-track { animation: none !important; }
+}
+
+.swatch-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+}
+.swatch-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: block;
+  box-shadow: var(--shadow-soft);
+}
+.swatch-hex {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: var(--color-ink);
+  background: var(--color-card-bg);
+  padding: 0.15em 0.7em;
+  border-radius: var(--radius-pill);
+}
+.swatch-name {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: var(--color-ink-soft);
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .branding-hero { flex-direction: column; }
+  .brand-swatches { align-self: center; }
+}
+
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--sp-4);
+}
+.brand-card {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  padding: var(--sp-4);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.brand-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+.brand-card img { max-width: 180px; margin: 0 auto var(--sp-3); }
+.brand-card--note {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 2px dashed var(--color-border);
+  box-shadow: none;
+  color: var(--color-ink-soft);
+}
+
+/* =========================================================
+   STELLINA MAE
+   ========================================================= */
+.stellina-wordmark {
+  max-width: 480px;
+  width: 80%;
+  margin: 0 auto var(--sp-4);
+}
+.section-intro--stellina { margin-left: auto; margin-right: auto; text-align: center; }
+
+.stellina-preview {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--sp-6);
+  align-items: center;
+  text-align: left;
+  max-width: 960px;
+  margin: var(--sp-6) auto 0;
+}
+.stellina-preview-frame {
+  border-radius: var(--radius-art);
+  overflow: hidden;
+  box-shadow: var(--shadow-lift);
+  background: #000;
+}
+.stellina-preview-frame video { width: 100%; display: block; }
+.stellina-preview-copy h3 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 1.6rem;
+  margin-bottom: var(--sp-1);
+}
+@media (max-width: 760px) {
+  .stellina-preview { grid-template-columns: 1fr; text-align: center; }
+  .stellina-preview-copy { text-align: center; }
+}
+
+/* =========================================================
+   CONTACT
+   ========================================================= */
+.section-inner--contact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-8);
+  align-items: start;
+}
+.section--contact .section-title { color: var(--color-bg); }
+.contact-links { list-style: none; padding: 0; margin: var(--sp-3) 0 0; opacity: 0.85; }
+.contact-links li { margin-bottom: var(--sp-1); }
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.contact-form label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+  margin-top: var(--sp-2);
+}
+.contact-form input, .contact-form textarea {
+  background: rgba(250,245,236,0.08);
+  border: 1px solid rgba(250,245,236,0.25);
+  border-radius: 10px;
+  padding: 0.8em 1em;
+  color: var(--color-bg);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+.contact-form input:focus, .contact-form textarea:focus {
+  outline: 2px solid var(--color-accent-gold);
+  border-color: transparent;
+}
+.contact-form .btn { margin-top: var(--sp-3); align-self: flex-start; }
+.contact-form-note { font-size: 0.8rem; opacity: 0.6; margin-top: var(--sp-2); }
+
+@media (max-width: 760px) {
+  .section-inner--contact { grid-template-columns: 1fr; }
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.site-footer {
+  background: var(--color-ink);
+  color: rgba(250,245,236,0.6);
+  text-align: center;
+  padding: var(--sp-3);
+  font-size: 0.8rem;
+}
+
+/* =========================================================
+   RESPONSIVE NAV (mobile)
+   ========================================================= */
+@media (max-width: 860px) {
+  .nav-toggle { display: flex; }
+  .primary-nav {
+    position: fixed;
+    top: 0; right: 0;
+    height: 100vh;
+    width: min(78vw, 320px);
+    background: var(--color-bg);
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--sp-4);
+    padding: var(--sp-8) var(--sp-4);
+    transform: translateX(100%);
+    transition: transform var(--dur-med) var(--ease-out);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+  }
+  .primary-nav.is-open { transform: translateX(0); }
+  .nav-cta { align-self: flex-start; }
+}
+
+/* =========================================================
+   COLOR REVEAL — everything through the film reel stays
+   monochrome; the art wheel is the deliberate moment color
+   begins, then stays color for the rest of the page.
+   ========================================================= */
+.hero-bg-illustration img:not(.hero-sketch-color),
+.pub-card-media img,
+.film-reel-track img {
+  filter: grayscale(1);
+}
+
+/* =========================================================
+   BRAINBOW REVEAL — centered transition moment before Branding
+   ========================================================= */
+.brainbow-reveal {
+  display: flex;
+  justify-content: center;
+  padding: var(--sp-8) var(--sp-4) 0;
+  background: var(--color-bg-alt);
+}
+.brainbow-reveal-stage {
+  position: relative;
+  width: min(50vw, 320px);
+  aspect-ratio: 1;
+}
+.brainbow-clip,
+.brainbow-final {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.brainbow-clip {
+  opacity: 1;
+  transition: opacity 1100ms var(--ease-out);
+}
+.brainbow-clip.is-hidden { opacity: 0; }
+.brainbow-final {
+  opacity: 0;
+  transition: opacity 1100ms var(--ease-out);
+}
+.brainbow-final.is-visible { opacity: 1; }
+
+/* =========================================================
+   AMBIENT RAINBOW-LIGHT REFLECTION
+   Fixed decorative layer behind all content. Fades in gradually
+   starting at Fine Art (JS toggles .is-visible via IntersectionObserver),
+   nudges slightly warmer/more visible through the Personal Studio wheel
+   (.is-vivid), then stays restrained for the rest of the page. Never
+   applied directly with any real opacity over the black-and-white film
+   reel or over text — it's the cream space around content that carries
+   the color, per Elena's spec. Slow independent drift per blob plus a
+   gentle scroll-linked parallax (~15% of scroll speed) via JS.
+   ========================================================= */
+/* #main needs position:relative (but no z-index of its own — that caused
+   an earlier bug, see below) so it can serve as the containing block for
+   .ambient-light via normal position:absolute — see AMBIENT RAINBOW-LIGHT
+   REFLECTION below for why this replaced position:fixed entirely. */
+#main { position: relative; }
+.ambient-light {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  top: 0; /* set dynamically via JS on scroll — see setupAmbientLight in main.js */
+  z-index: 1; /* explicitly above section backgrounds (which are z-index:auto) — see .section-inner below for how content stays above this in turn */
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.8s var(--ease-out);
+}
+.ambient-light.is-visible { opacity: 1; }
+.light-blob {
+  position: absolute;
+  width: 55vw;
+  height: 55vw;
+  max-width: 780px;
+  max-height: 780px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.32; /* bumped up again — 0.22 read as too faint once actually visible */
+  transition: opacity 2.2s var(--ease-out);
+  will-change: transform;
+}
+.ambient-light.is-vivid .light-blob { opacity: 0.46; } /* slightly warmer through the colorful painting section */
+.light-blob--pink {
+  top: 8%;
+  left: 4%;
+  background: radial-gradient(circle, rgba(230,140,150,0.9) 0%, rgba(230,140,150,0) 70%);
+  animation: driftA 70s ease-in-out infinite;
+}
+.light-blob--yellow {
+  top: 12%;
+  right: 2%;
+  background: radial-gradient(circle, rgba(230,190,110,0.9) 0%, rgba(230,190,110,0) 70%);
+  animation: driftB 85s ease-in-out infinite;
+  animation-delay: -20s;
+}
+.light-blob--cyan {
+  bottom: 10%;
+  left: 15%;
+  background: radial-gradient(circle, rgba(90,170,180,0.85) 0%, rgba(90,170,180,0) 70%);
+  animation: driftC 95s ease-in-out infinite;
+  animation-delay: -45s;
+}
+.light-blob--lavender {
+  bottom: 14%;
+  right: 8%;
+  background: radial-gradient(circle, rgba(150,130,180,0.85) 0%, rgba(150,130,180,0) 70%);
+  animation: driftA 78s ease-in-out infinite;
+  animation-delay: -30s;
+}
+@keyframes driftA {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3%, -2.5%) scale(1.06); }
+}
+@keyframes driftB {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-2.5%, 3%) scale(1.05); }
+}
+@keyframes driftC {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(2%, 2%) scale(1.07); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .light-blob { animation: none !important; }
+}
