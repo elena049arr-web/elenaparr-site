@@ -162,11 +162,17 @@ if ('IntersectionObserver' in window) {
   }
 })();
 
-/* ---------- Branding: duplicate swatch columns for seamless loop ---------- */
-['swatchTrack1', 'swatchTrack2'].forEach((id) => {
-  const track = document.getElementById(id);
-  if (track) track.innerHTML += track.innerHTML;
-});
+/* ---------- Branding logo marquee: duplicate the set once for a seamless auto-loop.
+   Skipped under reduced motion (CSS then wraps them into a static centered row). ---------- */
+(function setupLogoMarquee() {
+  const track = document.getElementById('logoTrack');
+  if (!track || prefersReducedMotion) return;
+  track.innerHTML += track.innerHTML; // 2 identical halves → CSS scroll -50% loops seamlessly
+})();
+
+/* Fit-to-width section titles were tried 2026-08-03 (Elena's "B") and reverted —
+   she preferred the smaller uniform size. Titles now use the CSS clamp on
+   .section-title (~115px cap). */
 
 /* ---------- Fine art: semicircular art wheel (Personal Studio) ----------
    Scroll-driven: the belt shifts as the visitor scrolls past the section,
@@ -249,29 +255,7 @@ if ('IntersectionObserver' in window) {
   }
 })();
 
-/* ---------- Brainbow reveal: play once, freeze, then smoothly crossfade to the static logo ---------- */
-(function setupBrainbowReveal() {
-  const clip = document.getElementById('brainbowClip');
-  const final = document.getElementById('brainbowFinal');
-  if (!clip || !final) return;
-
-  if (prefersReducedMotion) {
-    clip.classList.add('is-hidden');
-    final.classList.add('is-visible');
-    return;
-  }
-
-  clip.currentTime = 0;
-  clip.play().catch(() => {});
-  clip.addEventListener('ended', () => {
-    // hold on the frozen last frame briefly before the slow crossfade begins
-    setTimeout(() => {
-      final.classList.add('is-visible');
-      // only hide the video once the long crossfade has fully finished
-      setTimeout(() => clip.classList.add('is-hidden'), 1150);
-    }, 400);
-  });
-})();
+/* Brainbow reveal removed 2026-08-02 — see index.html note. */
 
 /* ---------- Bee ambient float (GSAP) ---------- */
 if (window.gsap && !prefersReducedMotion) {
@@ -702,33 +686,199 @@ function revealHeroWriting() {
   if (!colorLayer || !heroSection) return;
 
   if (prefersReducedMotion) {
-    colorLayer.style.clipPath = 'inset(0 0 0% 0)';
+    colorLayer.style.setProperty('--reveal', '1');
     return;
   }
 
-  // Reveal progress is tied directly to scroll position, the same way the
-  // ambient light and film reel are — not a separate fixed-duration
-  // animation. Starts as the hero begins leaving view, completes one hero-
-  // height of scrolling later, then locks permanently at fully revealed
-  // (never reverses on scrolling back up) once that point is reached.
-  let locked = false;
+  // Scroll-linked, but eased: scroll position sets a target reveal (0..1),
+  // then a rAF loop lerps the *displayed* value toward it. That slight lag is
+  // what reads as luxury — the colour keeps washing in for a beat after you
+  // stop scrolling, instead of snapping to the scrollbar. Completes a touch
+  // slower than before (0.6 of a hero-height) and locks permanently at fully
+  // revealed — never reverses on scrolling back up.
+  const SETTLE = 0.06;   // lerp factor — lower = slower / silkier
+  const RANGE = 0.6;     // fraction of hero height over which it completes
+  let current = 0, target = 0, locked = false, rafId = null;
+
+  function computeTarget() {
+    const end = heroSection.offsetHeight * RANGE;
+    target = Math.max(0, Math.min(1, window.scrollY / end));
+  }
+  function tick() {
+    current += (target - current) * SETTLE;
+    const settled = Math.abs(target - current) < 0.0015;
+    if (settled) current = target;
+    colorLayer.style.setProperty('--reveal', current.toFixed(4));
+    if (current >= 0.999) {                    // complete → lock forever
+      colorLayer.style.setProperty('--reveal', '1');
+      locked = true; rafId = null; return;
+    }
+    rafId = settled ? null : requestAnimationFrame(tick); // idle until next scroll
+  }
+  computeTarget();
+  current = target;                            // no jump if the page loads mid-scroll
+  colorLayer.style.setProperty('--reveal', current.toFixed(4));
+  if (current >= 0.999) { colorLayer.style.setProperty('--reveal', '1'); locked = true; }
+  window.addEventListener('scroll', () => {
+    if (locked) return;
+    computeTarget();
+    if (rafId == null) rafId = requestAnimationFrame(tick);
+  }, { passive: true });
+})();
+
+/* ---------- Contact meadow: cursor-rustled grass & flowers ----------
+   The 9 layers (5 grass + 4 flowers) share one canvas and stack into a
+   single cluster. Each is injected as its own <img> so it can sway
+   independently: a gentle idle breeze keeps the field alive, and the cursor
+   pushes nearby blades away from it (spring physics → a springy "rustle").
+   The meadow is pointer-events:none — we read the cursor from the section,
+   so the blades react without ever blocking a click on the email. */
+(function setupContactMeadow() {
+  const meadow = document.getElementById('contactMeadow');
+  const section = document.getElementById('contact');
+  if (!meadow || !section) return;
+
+  const LAYERS = [
+    'Grass-1.png', 'Grass-2.png', 'Grass-3.png', 'Grass-4.png', 'Grass-5.png',
+    'flower-1.png', 'flower-2.png', 'flower-3.png', 'flower-4.png'
+  ];
+  LAYERS.forEach((file, i) => {
+    const img = document.createElement('img');
+    img.src = 'assets/images/' + file;
+    img.className = 'meadow-blade';
+    img.alt = '';
+    img.loading = 'lazy';
+    img.style.zIndex = String(i); // grass behind, flowers in front (source order)
+    meadow.appendChild(img);
+  });
+
+  if (prefersReducedMotion) return; // static cluster, no rustle
+
+  // measured centroid x (0..1) of each layer's artwork, so the "piano key" lift
+  // follows the cursor to the actual plant under it (order matches LAYERS above)
+  const CENTERS = [0.322, 0.338, 0.217, 0.104, 0.194, 0.12, 0.414, 0.345, 0.245];
+  const blades = Array.from(meadow.querySelectorAll('.meadow-blade')).map((el, i) => {
+    const cx = CENTERS[i] != null ? CENTERS[i] : 0.3;
+    el.style.transformOrigin = (cx * 100).toFixed(1) + '% bottom'; // lift/grow from its own base
+    return { el, center: cx, mag: 0.9 + 0.2 * (i / 8), lift: 0, liftVel: 0 };
+  });
+
+  let pointerX = null, pointerActive = false;
+  section.addEventListener('pointermove', (e) => {
+    const r = meadow.getBoundingClientRect();
+    pointerX = (e.clientX - r.left) / r.width; // 0..1 across the meadow
+    pointerActive = true;
+  }, { passive: true });
+  section.addEventListener('pointerleave', () => { pointerActive = false; });
+
+  const title = document.querySelector('.contact-title');
+
+  // Gentle uniform sway (lowered), plus a per-flower "piano key" lift: whichever
+  // plant the cursor is over raises + enlarges, springing back as you move on.
+  let last = performance.now();
+  function frame(now) {
+    const t = now / 1000;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    const wind = Math.sin(t * 0.7) * 1.5; // gentle uniform idle sway (lowered)
+    blades.forEach((b) => {
+      let target = 0;
+      if (pointerActive && pointerX != null) {
+        target = Math.max(0, 1 - Math.abs(pointerX - b.center) / 0.14); // wider hit-zone = more playable
+      }
+      b.liftVel += (target - b.lift) * 95 * dt - b.liftVel * 12 * dt; // snappier spring w/ a little bounce = satisfying
+      b.lift += b.liftVel * dt;
+      const raise = (-b.lift * 42).toFixed(1);      // rise up (bigger)
+      const scale = (1 + b.lift * 0.30).toFixed(3); // and enlarge (much more)
+      b.el.style.transform = 'translateY(' + raise + 'px) scale(' + scale + ') skewX(' + (wind * b.mag).toFixed(2) + 'deg)';
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // Scroll motion (scroll-linked, no fixed positioning — GSAP-safe):
+  //  • heading POPS in (scale + fade) as it enters, then drifts up gently
+  //  • the meadow parallaxes at a slower rate → text & flowers move
+  //    independently, for layered depth
+  let sTick = false;
+  function scrollMotion() {
+    const rect = section.getBoundingClientRect();
+    const vh = window.innerHeight || 1;
+    const p = Math.max(0, Math.min(1, (vh - rect.top) / (vh + rect.height)));
+    if (title) {
+      const enter = Math.min(1, p / 0.25);
+      const ease = 1 - Math.pow(1 - enter, 3);   // easeOutCubic
+      const scale = 0.82 + 0.18 * ease;          // pronounced pop — grows into place
+      const drift = (p - 0.5) * -170;            // pronounced parallax drift (±85px) — clearly visible now
+      title.style.opacity = ease.toFixed(3);
+      title.style.transform = 'translateY(' + drift.toFixed(1) + 'px) scale(' + scale.toFixed(3) + ')';
+    }
+    // meadow stays rooted at the page base (no parallax) so the stems don't lift off the bottom
+    sTick = false;
+  }
+  scrollMotion();
+  window.addEventListener('scroll', () => {
+    if (!sTick) { requestAnimationFrame(scrollMotion); sTick = true; }
+  }, { passive: true });
+  window.addEventListener('resize', scrollMotion);
+})();
+
+/* ---------- Stellina immersive scene ----------
+   Injects the 12 layered PNGs (same canvas) back→front, then parallaxes each
+   on scroll: front layers travel more than distant ones for real depth. The
+   Dream Train (translateX loop) and campfire smoke are CSS animations on their
+   own layers. Layers are scaled ~1.12 so the parallax shift never reveals an
+   edge. Fully static under reduced motion. */
+(function setupStellinaScene() {
+  const scene = document.getElementById('stellinaScene');
+  if (!scene) return;
+  const fade = scene.querySelector('.stellina-scene-fade');
+  const LAYERS = [
+    { f: 'blue_sky_8', d: 8 },
+    { f: 'stars_7', d: 7 },
+    { f: 'River_background_6', d: 6 },
+    { f: 'clouds_gradient_top_to_blend_6', d: 6, cls: 'stel-clouds' },
+    { f: 'Castle_mountains_5', d: 5 },
+    { f: 'Birds_5', d: 5 },
+    { f: 'Train_4', d: 4, cls: 'stel-train' },
+    { f: 'Train_4', d: 4, cls: 'stel-train stel-train-b' }, // 2nd train, offset half a cycle → always one crossing
+    { f: 'Forest_rivers_edge_3', d: 3 },
+    { f: 'Pine_trees_2', d: 2 },
+    { f: 'Campfire_behind_smoke_1', d: 1 },
+    { f: 'Smoke_1', d: 1, cls: 'stel-smoke' },
+    { f: 'stellina_tree_1', d: 1 }
+  ];
+  const layers = LAYERS.map((L, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'stel-layer';
+    wrap.style.zIndex = String(i * 2); // explicit stacking so the fade (z-index 7) sits between sky and castle
+    const img = document.createElement('img');
+    img.src = 'assets/images/' + L.f + '.png';
+    img.alt = '';
+    img.loading = 'lazy';
+    if (L.cls) img.className = L.cls;
+    wrap.appendChild(img);
+    scene.insertBefore(wrap, fade); // keep the fade + viewer above the layers
+    return { wrap, depth: L.d };
+  });
+
+  if (prefersReducedMotion) return; // static scene (CSS turns the train/smoke off too)
+
   let ticking = false;
-  function positionReveal() {
-    if (locked) { ticking = false; return; }
-    const heroHeight = heroSection.offsetHeight;
-    const start = 0;
-    const end = heroHeight * 0.5;
-    let progress = (window.scrollY - start) / (end - start);
-    progress = Math.max(0, Math.min(1, progress));
-    colorLayer.style.clipPath = `inset(0 0 ${(1 - progress) * 100}% 0)`;
-    if (progress >= 1) locked = true; // stays fully revealed even if scrolled back up afterward
+  function parallax() {
+    const rect = scene.getBoundingClientRect();
+    const vh = window.innerHeight || 1;
+    const p = Math.max(0, Math.min(1, (vh - rect.top) / (vh + rect.height)));
+    layers.forEach(({ wrap, depth }) => {
+      const frontness = (9 - depth) / 8;            // 1 (front) … 0.125 (back)
+      const y = (p - 0.5) * -46 * frontness;        // nearer layers travel more
+      wrap.style.transform = 'translateY(' + y.toFixed(1) + 'px) scale(1.12)';
+    });
     ticking = false;
   }
-  positionReveal();
+  parallax();
   window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(positionReveal);
-      ticking = true;
-    }
+    if (!ticking) { requestAnimationFrame(parallax); ticking = true; }
   }, { passive: true });
+  window.addEventListener('resize', parallax);
 })();

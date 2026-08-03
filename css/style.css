@@ -2,20 +2,39 @@
    ELENA PARR — DESIGN SYSTEM TOKENS
    ========================================================= */
 :root {
-  /* Color */
-  --color-bg: #FAF5EC;
-  --color-bg-alt: #F3ECDF;
-  --color-ink: #2E2A24;
-  --color-ink-soft: #5B5548;
-  --color-accent-purple: #6B4E71;
-  --color-accent-gold: #C98A3E;
-  --color-accent-teal: #3F7A78;
-  --color-border: rgba(46, 42, 36, 0.12);
+  /* Color — WARM JEWEL palette (locked 2026-08-02). Full colour throughout;
+     the old grayscale-to-colour narrative was retired. */
+  --color-bg: #FBFAF7;        /* warm white (Porcelain) */
+  --color-bg-alt: #F7F4F0;    /* Parchment — alternating sections (Elena's pick,
+                                 Coolors fbfaf7-f7f4f0, 2026-08-02). Reads as the same
+                                 warm white one step down, not a separate colour.
+                                 Replaced #F3ECE8 pink-gray (cool undertone read as an
+                                 "ugly gray" in big flat areas) and a trial #F5EFE1 ivory
+                                 (leaned too gold). */
+  --color-ink: #421106;       /* Rich Mahogany — text, headings, footer */
+  --color-ink-soft: #5A4A44;  /* warm brown-grey — body copy */
+
+  /* Named brand accents */
+  --color-plum: #76395D;      /* Royal Plum — dark sections, buttons, bold colour moments */
+  --color-plum-dark: #5E2D4A; /* darkened plum for button hover/pressed states */
+  --color-plum-mauve: #6E4A63; /* readable plum-family body text (lilac is too light to read) */
+  --color-copper: #AE7222;    /* Copperwood — PRIMARY metallic accent: links, underlines */
+  --color-lilac: #C69AB4;     /* decorative only (too light for text) — it's lit-up plum */
+  --color-pop: #FF6DC4;       /* Bubblegum — rare reward pop; the loud member of the plum family */
+
+  /* Legacy aliases remapped so existing rules cascade to the new palette.
+     'teal' is retired — those usages (eyebrows, focus ring) now read as plum. */
+  --color-accent-purple: var(--color-plum);
+  --color-accent-gold: var(--color-copper);
+  --color-accent-teal: var(--color-plum);
+
+  --color-border: rgba(66, 17, 6, 0.12);
   --color-card-bg: #FFFDF9;
 
   /* Type */
-  --font-display: "Passion One", sans-serif;
-  --font-body: "Work Sans", sans-serif;
+  /* FONT SYSTEM — 2 families (hard rule, don't add more). */
+  --font-display: "Bebas Neue", sans-serif;  /* ALL headers — tall condensed caps, "bolded" via text-stroke (Bebas ships one weight) */
+  --font-body: "Work Sans", sans-serif;       /* body, subheads, UI */
 
   /* Spacing scale (8px base) */
   --sp-1: 0.5rem;
@@ -95,24 +114,29 @@ p { margin: 0 0 var(--sp-2); }
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-size: 0.75rem;
-  color: var(--color-accent-teal);
+  color: var(--color-lilac); /* scheme C (2026-08-02): soft "lit-up plum" eyebrow — intentionally
+                                faint; eyebrows are supplementary labels, the big Bebas title carries meaning */
   margin-bottom: var(--sp-1);
 }
 
 .section-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display); /* Bebas Neue */
   text-transform: uppercase;
-  font-weight: 700;
-  font-size: clamp(2.25rem, 5vw, 3.5rem);
-  line-height: 1.05;
+  font-weight: 400; /* Bebas ships a single weight */
+  -webkit-text-stroke: 0.018em currentColor; /* "bolds" Bebas — no real bold weight exists */
+  font-size: clamp(3rem, 9vw, 7.5rem); /* display-scale — echoes the oversized Connect header
+      (which reads at ~3.6× the old 4.25rem cap and fills ~¾ of the width). Bumped 2026-08-03
+      so section titles land as *moments*, not corner labels. Long titles wrap to 2 confident lines. */
+  line-height: 1.0;
   letter-spacing: 0.01em;
+  color: var(--color-plum); /* scheme C (2026-08-02): plum titles site-wide */
   margin-bottom: var(--sp-3);
 }
 
 .section-intro {
   max-width: 62ch;
   font-size: 1.05rem;
-  color: var(--color-ink-soft);
+  color: var(--color-plum-mauve); /* scheme C (2026-08-02): readable plum-family body site-wide */
   margin-bottom: var(--sp-8);
 }
 
@@ -136,7 +160,7 @@ p { margin: 0 0 var(--sp-2); }
   box-shadow: var(--shadow-soft);
 }
 .btn--primary:hover {
-  background: #593f5e;
+  background: var(--color-plum-dark);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lift);
 }
@@ -150,14 +174,14 @@ p { margin: 0 0 var(--sp-2); }
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(250, 245, 236, 0.85);
+  background: rgba(118, 57, 93, 0.92); /* Royal Plum, translucent — leans into the inverted theme */
   backdrop-filter: blur(8px);
   border-bottom: 1px solid transparent;
   transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
 .site-header.is-scrolled {
-  border-bottom-color: var(--color-border);
-  box-shadow: 0 4px 16px rgba(46,42,36,0.05);
+  border-bottom-color: rgba(198, 154, 180, 0.35); /* faint lilac hairline */
+  box-shadow: 0 4px 16px rgba(30, 8, 20, 0.18);
 }
 .header-inner {
   max-width: 1280px;
@@ -172,7 +196,7 @@ p { margin: 0 0 var(--sp-2); }
   text-transform: uppercase;
   font-size: 1.35rem;
   text-decoration: none;
-  color: var(--color-ink);
+  color: #FBFAF7; /* cream logo on plum */
 }
 .primary-nav {
   display: flex;
@@ -183,19 +207,20 @@ p { margin: 0 0 var(--sp-2); }
 }
 .primary-nav a {
   text-decoration: none;
-  color: var(--color-ink-soft);
+  color: #E7C9DC; /* light lilac links on plum */
   position: relative;
   transition: color var(--dur-fast) var(--ease-out);
 }
-.primary-nav a:hover { color: var(--color-ink); }
+.primary-nav a:hover { color: #FBFAF7; }
 .nav-cta {
-  background: var(--color-ink);
-  color: var(--color-bg) !important;
+  background: var(--color-lilac);
+  color: var(--color-plum-dark) !important; /* lilac pill, dark-plum label — pops on the plum bar */
+  font-weight: 700;
   padding: 0.5em 1.2em;
   border-radius: var(--radius-pill);
   transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
 }
-.nav-cta:hover { background: var(--color-accent-purple); transform: translateY(-2px); }
+.nav-cta:hover { background: #E7C9DC; transform: translateY(-2px); }
 
 .nav-toggle {
   display: none;
@@ -209,7 +234,7 @@ p { margin: 0 0 var(--sp-2); }
 .nav-toggle span {
   width: 24px;
   height: 2px;
-  background: var(--color-ink);
+  background: #FBFAF7; /* cream hamburger on plum */
   transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
 }
 
@@ -256,10 +281,35 @@ p { margin: 0 0 var(--sp-2); }
    alongside "always responsive" (ambient light, wheel, film reel) and
    "one-time unlock" (achievements). */
 .hero-sketch-color {
-  clip-path: inset(0 0 100% 0); /* fully hidden, clipped from the bottom — top set/updated via JS, tied directly to scroll position (see setupHeroSketchReveal in main.js) */
+  --reveal: 0; /* 0 = hidden, 1 = fully revealed. Driven by JS from scroll — see setupHeroSketchReveal in main.js */
+  z-index: 0;  /* colour layer sits UNDER the line art */
+  /* Feathered reveal edge instead of a hard clip line: the colour washes in
+     gradually under the sketch as --reveal grows. The soft ~18% band moving
+     top→bottom is what reads as luxury (a hard edge looked abrupt). */
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(var(--reveal) * 118% - 18%), transparent calc(var(--reveal) * 118%));
+  mask-image: linear-gradient(to bottom, #000 calc(var(--reveal) * 118% - 18%), transparent calc(var(--reveal) * 118%));
+}
+/* Line art is explicitly kept above the colour layer — no longer relying on
+   DOM paint order or a grayscale-filter stacking context (which was removed). */
+.hero-bg-illustration img:not(.hero-sketch-color) { z-index: 1; }
+/* Plum outline layer (2026-08-03): replaces the black line-art <img>. A plum
+   fill masked by the sketch's alpha — keeps the charcoal texture but in plum.
+   Sits on top (z-index 1) so the colour reveal still washes in underneath. */
+.hero-sketch-ink {
+  grid-area: 1 / 1;
+  justify-self: stretch;        /* override the parent's justify-items:center so the div
+                                   fills the same cell the colour <img> defines (an empty
+                                   div has 0 content width, so width:100% alone collapsed) */
+  align-self: stretch;
+  z-index: 1;
+  background: var(--color-plum);
+  -webkit-mask: url('../assets/images/hero-sketch.png') center / 100% 100% no-repeat;
+          mask: url('../assets/images/hero-sketch.png') center / 100% 100% no-repeat;
 }
 .no-js .hero-sketch-color, .reduced-motion .hero-sketch-color {
-  clip-path: inset(0 0 0% 0); /* just show it fully, no wipe animation */
+  --reveal: 1;
+  -webkit-mask-image: none;
+  mask-image: none; /* show it fully, no wipe animation */
 }
 
 .hero-bee-field { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
@@ -275,7 +325,7 @@ p { margin: 0 0 var(--sp-2); }
   width: fit-content;
   max-width: min(90vw, 780px);
   text-align: left;
-  background: rgba(250, 245, 236, 0.45);
+  background: rgba(251, 250, 246, 0.45);
   border-radius: var(--radius-card);
   padding: var(--sp-2) var(--sp-3) var(--sp-3);
 }
@@ -427,15 +477,92 @@ p { margin: 0 0 var(--sp-2); }
   position: relative;
   z-index: 2; /* sits above .ambient-light (z-index:1) so real content is never covered by it */
 }
-.section--publications { background: var(--color-bg); }
+/* Publications = inverted "gallery" dark section (2026-08-03, Elena's call):
+   deep plum bg makes the near-white book covers pop like objects on velvet, and
+   it bookends the site with the plum Contact section (cream sections between).
+   All text flips LIGHT here (scoped, doesn't touch the global scheme). Title is
+   LILAC per Elena; body/borders go light so nothing sits dark-on-dark. */
+.section--publications { background: var(--color-plum); color: #EFE6EC; }
+.section--publications .eyebrow { color: #E7C9DC; }
+.section--publications .section-title { color: var(--color-lilac); }
+.section--publications .section-intro { color: #EFE6EC; }
+.section--publications .pub-card-title { color: #FBFAF7; }
+.section--publications .pub-card-year,
+.section--publications .pub-card-spine-title,
+.section--publications .pub-card-spine-year { color: #D9C2D2; }
+.section--publications .pub-card-media,
+.section--publications .pub-card-footer { border-color: rgba(198, 154, 180, 0.55); } /* lilac datum lines */
+.section--publications a { color: var(--color-lilac); }
+
+/* ---- Publications 3-up books (2026-08-03): trimmed transparent covers on plum,
+   with a CSS lilac card offset to the lower-right + one consistent drop-shadow
+   (my part; Elena supplies clean die-cut covers). Covers are height-normalized
+   so the two portraits and the near-square back cover read as a set. ---- */
+.book-row {
+  list-style: none; margin: var(--sp-4) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, auto); /* two covers, sized to content */
+  justify-content: center;                                /* clustered + centered, not spread */
+  gap: clamp(var(--sp-8), 8vw, var(--sp-16)); align-items: end;
+}
+.book { text-align: center; }
+.book-frame {
+  position: relative; display: inline-block; margin: 0 0 var(--sp-4);
+  max-width: 100%;
+}
+.book-frame img {
+  position: relative; z-index: 2;
+  display: block; width: auto; height: auto;
+  max-height: 420px; max-width: 100%;
+  border-radius: 5px;
+  filter: drop-shadow(0 16px 26px rgba(30, 8, 20, 0.42));
+}
+.book-frame::before {                 /* lilac card, peeking out lower-right */
+  content: ""; position: absolute; z-index: 1;
+  top: 20px; left: 20px; right: -20px; bottom: -20px;
+  background: var(--color-lilac);
+  border-radius: 26px;
+}
+.book-title {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.1rem, 1.8vw, 1.6rem); line-height: 1.05;
+  color: #FBFAF7; margin: 0 0 0.2rem;
+}
+.book-year {
+  font-family: var(--font-body); font-size: 0.85rem;
+  color: #D9C2D2; margin: 0;
+}
+@media (max-width: 760px) {
+  .book-row { grid-template-columns: 1fr; gap: var(--sp-12); justify-items: center; }
+}
+/* Overview block under the book cards (on plum) */
+.pub-overview { margin-top: var(--sp-8); max-width: 64ch; }
+.pub-overview-title {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.4rem, 2.2vw, 2rem); letter-spacing: 0.02em;
+  color: var(--color-lilac); margin: 0 0 var(--sp-2);
+}
+.pub-overview-text {
+  font-family: var(--font-body); font-size: 1.05rem; line-height: 1.6;
+  color: #EFE6EC; margin: 0;
+}
+
+/* ---- Achievements: now its own warm-white section (split from Publications) ---- */
+.section--achievements { background: var(--color-bg); }
+.section--achievements .the-archive { margin-top: 0; } /* section padding provides the spacing now */
+.the-archive-title { color: var(--color-plum); }
+.the-archive-intro { color: var(--color-plum-mauve); }
 .section--fineart { background: var(--color-bg-alt); }
 .section--edu { background: var(--color-bg); }
 .section--branding { background: var(--color-bg-alt); }
+/* Scheme C is now global (see .eyebrow / .section-title / .section-intro):
+   lilac eyebrow, plum title, plum-mauve body — across all standard sections +
+   Stellina. The earlier Branding-scoped gold-eyebrow override was removed. */
 .section--stellina {
   background: linear-gradient(180deg, var(--color-bg) 0%, #F1E6EF 100%);
   text-align: center;
+  padding-bottom: 0; /* the full-screen scene flows straight into Contact — no gap */
 }
-.section--contact { background: var(--color-ink); color: var(--color-bg); }
+.section--contact { background: var(--color-plum); color: var(--color-bg); }
 
 .reveal {
   opacity: 0;
@@ -617,7 +744,7 @@ p { margin: 0 0 var(--sp-2); }
   margin-bottom: var(--sp-2);
 }
 .the-archive-intro {
-  color: var(--color-ink-soft);
+  color: var(--color-plum-mauve); /* scheme C body colour (was ink-soft) */
   margin-bottom: var(--sp-6);
 }
 
@@ -956,6 +1083,44 @@ p { margin: 0 0 var(--sp-2); }
   box-shadow: 0 20px 50px rgba(0,0,0,0.4);
 }
 
+/* Fine Art — still gallery grid (replaced the film-reel belt per Elena's
+   mockup). 3×2 charcoal/graphite studies on a soft lilac ground, so the
+   foundation drawings read like a gallery wall rather than a moving strip. */
+.fineart-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  margin: var(--sp-4) 0 var(--sp-12);
+  /* No panel: cards float directly on the section so the ambient rainbow
+     light shows around them. The lilac "room" was only a Canva stand-in
+     because the mockup couldn't reproduce that glow. */
+}
+.fineart-grid-item {
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--color-card-bg);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.fineart-grid-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* uniform cards like the mockup; adjust object-position per image if a crop clips something important */
+  display: block;
+}
+.fineart-grid-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lift);
+}
+@media (max-width: 860px) {
+  .fineart-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px) {
+  .fineart-grid { grid-template-columns: 1fr; }
+}
+
 .art-wheel-label {
   text-align: center;
   font-family: var(--font-body);
@@ -1075,80 +1240,12 @@ p { margin: 0 0 var(--sp-2); }
 }
 .branding-hero-copy .section-intro { margin-bottom: 0; }
 
-.brand-swatches {
-  display: flex;
-  gap: var(--sp-3);
-  flex: 0 0 auto;
-}
-.brand-swatch-col {
-  position: relative;
-  width: 108px;
-  height: 420px;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
-  transition: transform var(--dur-fast) var(--ease-out);
-}
-.brand-swatch-track {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--sp-4);
-  width: 100%;
-}
-.brand-swatch-col--up .brand-swatch-track { animation: swatchScrollUp 26s linear infinite; }
-.brand-swatch-col--down .brand-swatch-track { animation: swatchScrollDown 26s linear infinite; }
-@keyframes swatchScrollUp {
-  from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
-}
-@keyframes swatchScrollDown {
-  from { transform: translateY(-50%); }
-  to { transform: translateY(0); }
-}
-.brand-swatch-col:hover {
-  transform: scale(1.02); /* moved here from the track — the track's own transform is owned by the scroll animation and can't safely hold a second, separate transform value at the same time */
-}
-.brand-swatch-col:hover .brand-swatch-track {
-  animation-play-state: paused;
-}
-@media (prefers-reduced-motion: reduce) {
-  .brand-swatch-track { animation: none !important; }
-}
-
-.swatch-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-  flex: 0 0 auto;
-}
-.swatch-circle {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  display: block;
-  box-shadow: var(--shadow-soft);
-}
-.swatch-hex {
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.7rem;
-  color: var(--color-ink);
-  background: var(--color-card-bg);
-  padding: 0.15em 0.7em;
-  border-radius: var(--radius-pill);
-}
-.swatch-name {
-  font-family: var(--font-body);
-  font-size: 0.68rem;
-  color: var(--color-ink-soft);
-  text-align: center;
-}
+/* Swatch belts removed 2026-08-02 — the top logo band carries the colour;
+   the rainbow swatch columns competed with it. (.brand-swatch-*/.swatch-* CSS
+   and the swatchTrack duplication in main.js were deleted with them.) */
 
 @media (max-width: 760px) {
   .branding-hero { flex-direction: column; }
-  .brand-swatches { align-self: center; }
 }
 
 .brand-grid {
@@ -1176,6 +1273,105 @@ p { margin: 0 0 var(--sp-2); }
   color: var(--color-ink-soft);
 }
 
+/* ===== Branding CONCEPT (2026-08-02): identity logo wall + pitch decks =====
+   Angle: RANGE + fast story-driven design, not illustration. Equal neutral
+   cells so wildly different logos read as one system. */
+.brand-block { margin-top: var(--sp-8); }
+.brand-block-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  letter-spacing: 0.02em;
+  color: var(--color-ink);
+  -webkit-text-stroke: 0.4px var(--color-ink);
+  margin-bottom: var(--sp-1);
+}
+.brand-block-lead {
+  font-family: var(--font-body);
+  color: var(--color-ink-soft);
+  max-width: 60ch;
+  margin-bottom: var(--sp-4);
+}
+
+/* Logo lockup band — 3 cohesive rainbow logos crowning the section, no cells
+   (the set is unified enough to sit directly on the bg). Height-normalized so
+   the wide Stellina wordmark and square Brainbow read as one row; optical, not
+   mathematical — Stellina naturally spans widest. */
+/* Logo MARQUEE (auto-belt experiment 2026-08-02). Seamless because JS duplicates
+   the set once and we scroll exactly -50%; spacing is per-item margin-right (NOT
+   flex `gap`) so every item — including the seam — carries equal trailing space,
+   which is what makes -50% line up perfectly. Edge mask fades logos in/out.
+   TO REVERT to the static lockup: unwrap .logo-marquee + remove the JS dup, then
+   set .logo-band back to { flex-wrap:wrap; width:auto; justify-content:space-between;
+   gap:var(--sp-6); animation:none } and drop the margin-right. */
+.logo-marquee {
+  overflow: hidden;
+  margin: 0 0 var(--sp-8);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.logo-band {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: max-content;
+  animation: logoScroll 34s linear infinite;
+}
+.logo-marquee:hover .logo-band { animation-play-state: paused; }
+@keyframes logoScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); } /* two identical halves → seamless */
+}
+.logo-band-item { flex: 0 0 auto; margin-right: var(--sp-12); }
+.logo-band-item img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-height: 160px;
+  max-width: 480px;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.logo-band-item img:hover { transform: translateY(-4px) scale(1.03); }
+@media (max-width: 760px) {
+  .logo-band-item { margin-right: var(--sp-8); }
+  .logo-band-item img { max-height: 96px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-band { animation: none; flex-wrap: wrap; width: auto; justify-content: center; }
+  .logo-band-item { margin-right: 0; }
+  .logo-band-item img { transition: none; }
+  .logo-band-item img:hover { transform: none; }
+}
+
+.deck-row {
+  list-style: none; margin: 0; padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--sp-4);
+}
+.deck-card {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.deck-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+.deck-video {
+  display: block; width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--color-ink);
+  object-fit: cover;
+}
+.deck-name {
+  font-family: var(--font-body); font-weight: 600;
+  color: var(--color-ink);
+  padding: var(--sp-2) var(--sp-3);
+  margin: 0;
+}
+
 /* =========================================================
    STELLINA MAE
    ========================================================= */
@@ -1184,7 +1380,8 @@ p { margin: 0 0 var(--sp-2); }
   width: 80%;
   margin: 0 auto var(--sp-4);
 }
-.section-intro--stellina { margin-left: auto; margin-right: auto; text-align: center; }
+.section-intro--stellina { margin-left: auto; margin-right: auto; margin-bottom: var(--sp-3); text-align: center; }
+.stellina-cta { margin-bottom: var(--sp-8); } /* button sits under the paragraph, with room before the scene */
 
 .stellina-preview {
   display: grid;
@@ -1214,17 +1411,179 @@ p { margin: 0 0 var(--sp-2); }
 }
 
 /* =========================================================
+   STELLINA immersive scene — 12 stacked layers (same 1366×768
+   canvas): per-layer scroll parallax, a looping Dream Train,
+   drifting campfire smoke, and a top fade into the warm white.
+   ========================================================= */
+.stellina-scene {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 100vh; /* full-screen immersive (was a cropped 16:9 band) */
+  overflow: hidden;
+  margin-top: var(--sp-6);
+  background: #140a26; /* deep night behind the layers while they load */
+}
+/* no will-change here: 12 promoted full-size layers was the scroll-jank cause */
+.stel-layer { position: absolute; inset: 0; }
+.stel-layer img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* top edge dissolves into the warm-white section instead of a hard cut */
+.stellina-scene-fade {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 24%;
+  z-index: 7; /* sits BETWEEN the sky layers (z≤6) and the castle/trees (z≥8) so only the sky fades — castle + pine stay crisp */
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--color-bg) 0%, rgba(251,250,246,0.55) 42%, transparent 100%);
+}
+.stellina-viewer {
+  position: absolute;
+  z-index: 25;
+  left: 44%;
+  top: 56%;
+  transform: translate(-50%, -50%);
+  width: min(40%, 480px);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 26px 60px rgba(0,0,0,0.5);
+  border: 3px solid rgba(255,255,255,0.16);
+  background: #000;
+}
+.stellina-viewer video { width: 100%; display: block; }
+.stellina-cta-row { margin-top: var(--sp-6); }
+
+/* Dream Train — sweeps the track and loops; off-screen at both ends so the
+   reset is unseen, and it's layer 4 so the forest/trees occlude the edges. */
+@keyframes stellinaTrain {
+  from { transform: translateX(-55vw); }
+  to   { transform: translateX(75vw); }
+}
+.stel-train { animation: stellinaTrain 24s linear -12s infinite; will-change: transform; } /* -12s delay = train already mid-crossing on load */
+.stel-train-b { animation-delay: 0s; } /* 2nd train, offset half a cycle from the first → one is always crossing (seamless) */
+
+/* Campfire smoke — gentle billowing rise, pivoting near its base. */
+@keyframes stellinaSmoke {
+  0%, 100% { transform: translateX(0) skewX(0deg) scaleY(1); opacity: 0.75; }
+  50%      { transform: translateX(7px) skewX(6deg) scaleY(1.06); opacity: 1; }
+}
+.stel-smoke { transform-origin: 84% 78%; animation: stellinaSmoke 7.5s ease-in-out infinite; will-change: transform; }
+
+/* Clouds — slow, calm horizontal drift. On the <img>, so it composes with the
+   wrap's scroll parallax (translateY) rather than fighting it on one element.
+   The wrap is scale(1.12) (≈6% bleed each side) and .stellina-scene clips
+   overflow, so ±2% never exposes an edge. Scroll-tied site elsewhere, but a
+   sky needs its own quiet life — this stays gentle (40s, eased, alternating). */
+@keyframes stellinaClouds {
+  from { transform: translateX(-2%); }
+  to   { transform: translateX(2%); }
+}
+.stel-clouds { animation: stellinaClouds 40s ease-in-out infinite alternate; will-change: transform; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stel-train, .stel-smoke, .stel-clouds { animation: none !important; }
+}
+@media (max-width: 700px) {
+  .stellina-viewer { width: 62%; left: 50%; }
+}
+
+/* =========================================================
    CONTACT
    ========================================================= */
-.section-inner--contact {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--sp-8);
-  align-items: start;
+/* Connect: single column now (form removed) — big serif heading, invite line,
+   and a clickable email, with the grass/flower meadow rooted along the bottom. */
+/* overflow:hidden clips the meadow at the section/footer seam so its downward
+   dip can't add scrollable white space below the footer (that was the "pull up
+   white space" bug). Flowers still reach the bottom, rooting at the soil line.
+   min-height gives the section room to breathe (was feeling cramped). */
+.section--contact { position: relative; overflow: hidden; min-height: 88vh; padding: var(--sp-16) var(--sp-4); }
+/* mahogany "soil" band at the section bottom so the flowers root IN the soil
+   (the layered look) while overflow:hidden still prevents the white-space bug.
+   The footer below is the same mahogany, so it reads as one continuous ground. */
+.section--contact::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: clamp(80px, 9vw, 140px); /* scales with the meadow so the soil always reaches the flower body — no gap */
+  background: var(--color-ink);
+  z-index: 0; /* behind the flowers (z-index 1) and the copy (z-index 2) */
 }
-.section--contact .section-title { color: var(--color-bg); }
-.contact-links { list-style: none; padding: 0; margin: var(--sp-3) 0 0; opacity: 0.85; }
-.contact-links li { margin-bottom: var(--sp-1); }
+.section-inner--contact {
+  position: relative;
+  z-index: 2; /* copy sits above the meadow */
+  max-width: none; /* let the oversized heading fill the width, per mockup */
+  text-align: center; /* centered, per Elena's mockup */
+}
+.contact-title {
+  font-family: var(--font-display); /* Bebas Neue, per the mockup */
+  font-weight: 400;
+  -webkit-text-stroke: 0.014em currentColor; /* bolded */
+  color: var(--color-lilac);
+  font-size: clamp(4rem, 19vw, 18rem); /* big & screen-filling */
+  line-height: 0.85;
+  letter-spacing: 0.01em;
+  margin: 0 0 var(--sp-4);
+  will-change: transform; /* scroll parallax (JS) */
+}
+.contact-invite {
+  color: rgba(251, 250, 246, 0.82);
+  font-size: 1.05rem;
+  max-width: 46ch;
+  margin: 0 auto var(--sp-3); /* centered */
+}
+.contact-email {
+  display: inline-block;
+  font-size: clamp(1.1rem, 2.6vw, 1.7rem);
+  color: var(--color-bg);
+  text-decoration: none;
+  border-bottom: 2px solid var(--color-copper);
+  padding-bottom: 3px;
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.contact-email:hover { color: var(--color-lilac); border-color: var(--color-lilac); }
+
+/* Meadow: the 9 grass/flower layers are all the SAME canvas, stacked, so
+   together they compose one cluster (bottom-left, per Elena's mockup). Each
+   layer is injected as its own <img> so JS can rustle it independently. */
+.contact-meadow {
+  position: absolute;
+  left: clamp(-2rem, 1vw, 2rem);
+  bottom: 0; /* section is now the last element, so bottom:0 = page base → stems flush to the base */
+  width: clamp(420px, 60vw, 920px); /* bigger — fills more of the negative space */
+  aspect-ratio: 865 / 812; /* exact shared layer canvas so the stack lines up perfectly */
+  z-index: 1; /* behind the copy (z-index 2) */
+  pointer-events: none; /* reacts to the cursor but never blocks clicks */
+}
+/* footer credit, merged into this section so the section reaches the page base */
+.contact-credit {
+  position: absolute;
+  bottom: var(--sp-2);
+  left: 0; right: 0;
+  margin: 0;
+  text-align: center;
+  color: rgba(250, 245, 236, 0.6);
+  font-size: 0.8rem;
+  z-index: 3; /* above the flowers so it stays readable */
+}
+.meadow-blade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  transform-origin: bottom center; /* rooted at the base — blades pivot from the ground */
+  will-change: transform;
+}
 
 .contact-form {
   display: flex;
@@ -1279,7 +1638,7 @@ p { margin: 0 0 var(--sp-2); }
     top: 0; right: 0;
     height: 100vh;
     width: min(78vw, 320px);
-    background: var(--color-bg);
+    background: var(--color-plum); /* plum slide-in panel to match the bar */
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
@@ -1294,49 +1653,14 @@ p { margin: 0 0 var(--sp-2); }
 }
 
 /* =========================================================
-   COLOR REVEAL — everything through the film reel stays
-   monochrome; the art wheel is the deliberate moment color
-   begins, then stays color for the rest of the page.
+   COLOR — the site is full-colour throughout. The grayscale-
+   to-colour narrative was retired (it depended on the film reel
+   + crossword, both being reworked). The hero sketch colour-
+   reveal wipe stays — it stands on its own. Do NOT reintroduce
+   a global filter: grayscale().
    ========================================================= */
-.hero-bg-illustration img:not(.hero-sketch-color),
-.pub-card-media img,
-.film-reel-track img {
-  filter: grayscale(1);
-}
 
-/* =========================================================
-   BRAINBOW REVEAL — centered transition moment before Branding
-   ========================================================= */
-.brainbow-reveal {
-  display: flex;
-  justify-content: center;
-  padding: var(--sp-8) var(--sp-4) 0;
-  background: var(--color-bg-alt);
-}
-.brainbow-reveal-stage {
-  position: relative;
-  width: min(50vw, 320px);
-  aspect-ratio: 1;
-}
-.brainbow-clip,
-.brainbow-final {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  mix-blend-mode: multiply;
-}
-.brainbow-clip {
-  opacity: 1;
-  transition: opacity 1100ms var(--ease-out);
-}
-.brainbow-clip.is-hidden { opacity: 0; }
-.brainbow-final {
-  opacity: 0;
-  transition: opacity 1100ms var(--ease-out);
-}
-.brainbow-final.is-visible { opacity: 1; }
+/* BRAINBOW REVEAL section removed 2026-08-02 — see index.html note. */
 
 /* =========================================================
    AMBIENT RAINBOW-LIGHT REFLECTION
