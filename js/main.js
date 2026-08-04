@@ -707,13 +707,13 @@ if (window.gsap && !prefersReducedMotion) {
   // taller board (board height bumped in CSS). Same {l,t,w,r} meaning as pos, indexed to
   // match STICKERS above (founder, books, pitch, nonfiction, teacher, ai, arrive).
   const MOBILE_POS = [
-    { l: 35, t: 19, w: 42, r: -4 },  // founder (crown)
-    { l: 67, t: 31, w: 33, r: 5 },   // published books
-    { l: 35, t: 44, w: 44, r: -3 },  // pitch (bear)
-    { l: 64, t: 56, w: 38, r: -10 }, // nonfiction (frame)
-    { l: 37, t: 68, w: 33, r: -5 },  // teacher (mermaid vase)
-    { l: 63, t: 80, w: 35, r: 4 },   // ai competition (dino)
-    { l: 43, t: 91, w: 23, r: -6 },  // arrive alive (paintbrush)
+    { l: 35, t: 28, w: 40, r: -4 },  // founder (dragon)
+    { l: 67, t: 39, w: 32, r: 5 },   // published books
+    { l: 35, t: 50, w: 43, r: -3 },  // pitch (bear)
+    { l: 64, t: 60, w: 37, r: -10 }, // nonfiction (frame)
+    { l: 37, t: 71, w: 32, r: -5 },  // teacher (mermaid vase)
+    { l: 63, t: 81, w: 34, r: 4 },   // ai competition (dino)
+    { l: 43, t: 92, w: 22, r: -6 },  // arrive alive (paintbrush)
   ];
   const mqMobile = window.matchMedia('(max-width: 760px)');
 

@@ -973,8 +973,11 @@ p { margin: 0 0 var(--sp-2); }
    scatter itself is set inline by setupStickerSheet's MOBILE_POS; here we just give the
    board the height that column needs and lift the title block toward the crest top. */
 @media (max-width: 760px) {
-  .section--achievements .the-archive { height: clamp(940px, 250vw, 1140px); }
-  .section--achievements .archive-header { top: 6%; }
+  .section--achievements .the-archive { height: clamp(1000px, 262vw, 1200px); }
+  /* Seat the title lower in the crest so it isn't crammed against the top edge (Elena — same
+     issue we fixed on desktop). top:10% gives a comfortable margin above the words across
+     phone widths; the sticker column below is shifted down to match (MOBILE_POS in main.js). */
+  .section--achievements .archive-header { top: 10%; }
   /* The mask PNG is landscape (2550×1693); forcing it to 100%×100% of the tall mobile board
      squished the sheet narrow + thin (Elena). `cover` scales it to fill the width and crops
      the overflow instead — so the parchment fills the board edge-to-edge. The shadow layer
