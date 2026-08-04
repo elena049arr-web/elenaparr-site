@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=64">
+<link rel="stylesheet" href="css/style.css?v=90">
 </head>
 <body>
 
@@ -74,12 +74,26 @@
     </div>
 
     <div class="hero-content">
-      <div class="hero-writing" id="heroWriting" aria-hidden="true">
-        <video class="hero-clip" id="heroClipErase" src="assets/video/hero-erase.mp4" muted playsinline preload="auto"></video>
-        <video class="hero-clip is-hidden" id="heroClip" src="assets/video/hero-nice-to-meet-ya.mp4" muted playsinline preload="auto"></video>
-        <img class="hero-clip-final" id="heroClipFinal" src="assets/images/hero-nice-to-meet-ya-final.webp" alt="">
+      <!-- Interactive hero title (videos SCRAPPED 2026-08-04, Elena): "HI, I'M ELENA PARR"
+           rebuilt from Elena's own per-letter PNGs (each on the same 2550×1298 canvas,
+           stacked to recompose her exact layout). Each ELENA PARR letter zooms/wobbles on
+           hover; hi_im is the non-interactive prefix. Revealed on load (setupHeroName in
+           main.js). Screen-reader text lives in .hero-static-fallback. Its left edge is
+           translateX'd to line up with the tagline below. -->
+      <div class="hero-name" id="heroName" aria-hidden="true">
+        <img class="hero-name-prefix" src="assets/images/hi_im.png" alt="">
+        <img class="hero-letter hl-e1" src="assets/images/e_1.png" alt="">
+        <img class="hero-letter hl-l2" src="assets/images/l_2.png" alt="">
+        <img class="hero-letter hl-e3" src="assets/images/e_3.png" alt="">
+        <img class="hero-letter hl-n4" src="assets/images/n_4.png" alt="">
+        <img class="hero-letter hl-a5" src="assets/images/a_5.png" alt="">
+        <img class="hero-letter hl-p6" src="assets/images/p_6.png" alt="">
+        <img class="hero-letter hl-a7" src="assets/images/a_7.png" alt="">
+        <img class="hero-letter hl-r8" src="assets/images/r_8.png" alt="">
+        <img class="hero-letter hl-r9" src="assets/images/r_9.png" alt="">
+        <img class="hero-letter hl-period" src="assets/images/period.png" alt="">
       </div>
-      <h1 class="hero-static-fallback">Hi, I'm Elena Parr. Nice to meet ya.</h1>
+      <h1 class="hero-static-fallback">Hi, I'm Elena Parr.</h1>
 
       <p class="hero-tagline">Illustrator &amp; multidisciplinary designer — fine art, publications, educational design, branding, and a storytelling universe called <a href="#stellina">Stellina Mae</a>.</p>
 
@@ -102,38 +116,52 @@
     <div class="section-inner">
       <p class="eyebrow">01 — About</p>
       <h2 class="section-title">About</h2>
-      <p class="section-intro">
-        My work in creative freelance projects began at fifteen — leading to my first two published books as an illustrator.
-      </p>
 
-      <!-- About = intro section for now; the two published books live here as a
-           supporting beat. Publications graduates to its own section later when
-           there's the volume. Left column = books today, professional working
-           photos to join them later; right column = overview copy (balances the
-           left-flanked imagery). Renamed from "Publications" 2026-08-03. -->
-      <div class="about-layout">
-        <!-- 2-up: the two front covers (back cover dropped 2026-08-03 — it out-featured
-             the fronts, and the intro says "two books"). Trimmed transparent-bg PNGs on
-             the plum; lilac offset card + drop-shadow are CSS. NOTE FOR ELENA: captions
-             are factual placeholders — refine as you like. Pro working photos to be
-             added to this left column later. -->
-        <ul class="book-row">
-          <li class="book">
-            <figure class="book-frame"><img src="assets/images/pub-pans-front.png" alt="My Story About Pans/Pandas front cover, illustrated by Elena Parr" loading="lazy"></figure>
-            <p class="book-title">My Story About Pans/Pandas</p>
-            <p class="book-year">Published 2019</p>
-          </li>
-          <li class="book">
-            <figure class="book-frame"><img src="assets/images/pub-ivory.png" alt="Ivory Butterflies cover, illustrated by Elena Parr" loading="lazy"></figure>
-            <p class="book-title">Ivory Butterflies</p>
-            <p class="book-year">Published 2021</p>
-          </li>
-        </ul>
+      <!-- Rebuilt to Elena's mockup 2026-08-04: a tight two-column "newspaper" — each
+           column packs its items independently so they break up like bricks (no aligned
+           rows). Left: first chapter · books · Tampa chapter. Right: Buttons comic · MECA
+           chapter · Brainbow. Images sit on lilac rounded "mat" cards; body copy justified.
+           NOTE (mobile pass): the columns group the DOM, so reading order flows left col
+           then right col — revisit ordering when we do the mobile layout. -->
+      <div class="about-cols">
 
-        <div class="pub-overview">
-          <h3 class="pub-overview-title">Overview</h3>
-          <p class="pub-overview-text"><!-- NOTE FOR ELENA: your About/overview copy — who you are, your illustration role, and the stories behind the books. Placeholder below, replace it. -->A short overview goes here — who you are as an illustrator, your role on these books, and the story behind the work. <em>(placeholder — replace with your copy)</em></p>
+        <div class="about-col">
+          <div class="about-text">
+            <p class="about-para">I launched my freelance art career at 15 in 2019, illustrating a children's book on PANS/PANDAS awareness (co-written by Dr. Avery and Mrs. Bassman) and a novel cover soon after — the work that cemented my path into art.</p>
+          </div>
+          <div class="about-books">
+            <figure class="about-card">
+              <div class="about-card-media"><img src="assets/images/pub-pans-front.png" alt="My Story About Pans/Pandas cover, illustrated by Elena Parr" loading="lazy"></div>
+              <figcaption class="about-cap"><span class="about-cap-title">My Story About Pans/Pandas</span><span class="about-cap-sub">Published 2019</span></figcaption>
+            </figure>
+            <figure class="about-card">
+              <div class="about-card-media"><img src="assets/images/pub-ivory.png" alt="Ivory Butterflies cover, illustrated by Elena Parr" loading="lazy"></div>
+              <figcaption class="about-cap"><span class="about-cap-title">Ivory Butterflies</span><span class="about-cap-sub">Published 2021</span></figcaption>
+            </figure>
+          </div>
+          <div class="about-text">
+            <p class="about-para">In 2024 I transferred to University of Tampa, where two hurricanes forced two evacuations in my first semester — yet I still placed top 10 in Tampa's C.R.E.A.T.E. pitch competition. I returned to Maine after one semester and now attend USM while working as a nanny and building my current project: Stellina Mae's Storytime Adventures, a storytelling brand weaving together everything I've learned along the way.</p>
+          </div>
         </div>
+
+        <div class="about-col">
+          <figure class="about-card about-card--wide">
+            <div class="about-card-media"><img src="assets/images/fineart-buttons-comic.webp" alt="Buttons the Blue Faced Moon, a four-panel comic strip" loading="lazy"></div>
+            <!-- NOTE FOR ELENA: the mockup mislabeled this as "My Story About Pans/Pandas".
+                 Corrected to the real title; it wasn't published (made at MECA). Confirm the
+                 "MECA · 2021" sub-line wording. -->
+            <figcaption class="about-cap"><span class="about-cap-title">Buttons the Blue Faced Moon</span><span class="about-cap-sub">MECA · 2021</span></figcaption>
+          </figure>
+          <div class="about-text">
+            <p class="about-para">In 2021 I attended MECA's pre-college program, majoring in painting and illustration, then graduated Falmouth High School with a Fine Arts Endorsement. I spent a year at Lesley University's fine arts program before a creativity and innovation course redirected me toward business. I left to spend a year in early childhood education as a co-lead preschool teacher at Goldman Family Preschool.</p>
+          </div>
+          <figure class="about-card about-card--brainbow">
+            <div class="about-card-media about-card-media--pad"><img src="assets/images/brainbow-logo-tight.webp" alt="Brainbow — a rainbow-brain logo wordmark" loading="lazy"></div>
+            <!-- NOTE FOR ELENA: confirm the "Brand identity" sub-line for Brainbow. -->
+            <figcaption class="about-cap"><span class="about-cap-title">Brainbow</span><span class="about-cap-sub">Brand identity</span></figcaption>
+          </figure>
+        </div>
+
       </div>
     </div>
   </section>
@@ -172,16 +200,30 @@
         Traditional drawing built my understanding of form, composition, and light. Today, those foundations continue to influence the colorful, imaginative worlds I create through painting and illustration.
       </p>
 
-      <!-- Fine Art foundation studies: a calm still gallery (replaced the
-           scrolling film-reel belt per Elena's mockup — 3×2 grid on a soft
-           lilac ground). Order matches the mockup left→right, top→bottom. -->
-      <div class="fineart-grid">
-        <figure class="fineart-grid-item"><img src="assets/images/fineart-figure-1.webp" alt="Charcoal figure study" loading="lazy"></figure>
-        <figure class="fineart-grid-item"><img src="assets/images/fineart-figure-2.webp" alt="Charcoal figure study of two reclining figures" loading="lazy"></figure>
-        <figure class="fineart-grid-item"><img src="assets/images/fineart-10-diane-actaeon.webp" alt="Diane and Actaeon, charcoal study after Titian" loading="lazy"></figure>
-        <figure class="fineart-grid-item"><img src="assets/images/New-Cropped-Doll-Fine-Art.png" alt="Pencil drawing of a doll in a shadow box" loading="lazy"></figure>
-        <figure class="fineart-grid-item"><img src="assets/images/fineart-11-stilllife.webp" alt="Graphite still life drawing" loading="lazy"></figure>
-        <figure class="fineart-grid-item"><img src="assets/images/fineart-12-eyestudy.webp" alt="Detailed graphite eye study" loading="lazy"></figure>
+      <!-- Fine Art foundation studies as a click-through DECK (Elena, 2026-08-04):
+           the six studies stack like a messy, slightly-tilted pile; click the top
+           card / the arrows / ← → keys to flip through, flashcard style.
+           setupFineartDeck() enhances #deckStack into the absolute-positioned pile
+           (adds .is-deck). Without JS — or under reduced motion — it stays a calm
+           centered grid so all six are still visible. Images are EAGER, not lazy:
+           the JS stacks them with transforms and loading="lazy" keys off the
+           pre-transform position (same trap that blanked the art wheel). -->
+      <div class="fineart-deck" id="fineartDeck">
+        <div class="fdeck-stack" id="deckStack" tabindex="0" role="group"
+             aria-roledescription="flip-through card deck"
+             aria-label="Fine art studies — click, use the arrows, or press the left/right arrow keys to flip through">
+          <figure class="fdeck-card"><img src="assets/images/fineart-figure-1.webp" alt="Charcoal figure study"></figure>
+          <figure class="fdeck-card"><img src="assets/images/fineart-figure-2.webp" alt="Charcoal figure study of two reclining figures"></figure>
+          <figure class="fdeck-card"><img src="assets/images/fineart-10-diane-actaeon.webp" alt="Diane and Actaeon, charcoal study after Titian"></figure>
+          <figure class="fdeck-card"><img src="assets/images/New-Cropped-Doll-Fine-Art.webp" alt="Pencil drawing of a doll in a shadow box"></figure>
+          <figure class="fdeck-card"><img src="assets/images/fineart-11-stilllife.webp" alt="Graphite still life drawing"></figure>
+          <figure class="fdeck-card"><img src="assets/images/fineart-12-eyestudy.webp" alt="Detailed graphite eye study"></figure>
+        </div>
+        <div class="fdeck-nav">
+          <button class="fdeck-btn" id="deckPrev" type="button" aria-label="Previous drawing">&lsaquo;</button>
+          <p class="fdeck-count" aria-live="polite"><span id="deckIndex">1</span> / <span id="deckTotal">6</span></p>
+          <button class="fdeck-btn" id="deckNext" type="button" aria-label="Next drawing">&rsaquo;</button>
+        </div>
       </div>
 
       <p class="art-wheel-label">Personal Studio</p>
@@ -191,13 +233,16 @@
                loading="lazy" keys off pre-transform layout position — so a piece laid
                out off-screen but transformed into the arc never triggers and renders
                blank (bit fineart-03-flamingo). 7 small webps, fine to load eagerly. -->
-          <figure class="art-wheel-piece"><img src="assets/images/fineart-01-fairy.webp" alt="Painterly illustration of a fairy among cosmic flowers"></figure>
-          <figure class="art-wheel-piece"><img src="assets/images/fineart-02-cosmic-child.webp" alt="Painterly illustration of a child reaching for a butterfly in a cosmic dreamscape"></figure>
-          <figure class="art-wheel-piece"><img src="assets/images/fineart-07-tiger.webp" alt="Painting of a tiger wading through a lily pond"></figure>
-          <figure class="art-wheel-piece"><img src="assets/images/fineart-05-abstract.webp" alt="Abstract botanical watercolor pattern"></figure>
-          <figure class="art-wheel-piece"><img src="assets/images/fineart-06-surreal.webp" alt="Surreal figurative painting"></figure>
-          <figure class="art-wheel-piece"><img src="assets/images/fineart-03-flamingo.webp" alt="Painting of flamingos at sunset"></figure>
-          <figure class="art-wheel-piece"><img src="assets/images/fineart-04-flamingo.webp" alt="Painting of flamingos in a tropical wetland"></figure>
+          <!-- NB: filenames are legacy/scrambled — the alt + caption below reflect the ACTUAL
+               painting in each file (verified by eye 2026-08-04). Ghost titles + year per Elena. -->
+          <figure class="art-wheel-piece"><img src="assets/images/fineart-01-fairy.webp" alt="Painting of a tiger prowling through a lily pond, 'Tiger in Luscious Hunt'"><figcaption class="art-wheel-caption"><span class="awc-title">Tiger in Luscious Hunt</span><span class="awc-year">2025</span></figcaption></figure>
+          <figure class="art-wheel-piece"><img src="assets/images/fineart-02-cosmic-child.webp" alt="Watercolor of koi fish in a summer stream, 'Koi in August'"><figcaption class="art-wheel-caption"><span class="awc-title">Koi in August</span><span class="awc-year">2025</span></figcaption></figure>
+          <figure class="art-wheel-piece"><img src="assets/images/fineart-07-tiger.webp" alt="Painting of flamingos at sunset, 'I Tango Instead'"><figcaption class="art-wheel-caption"><span class="awc-title">I Tango Instead&hellip;</span><span class="awc-year">2025</span></figcaption></figure>
+          <figure class="art-wheel-piece"><img src="assets/images/fineart-05-abstract.webp" alt="Painting of a child reaching for a butterfly in a cosmic dreamscape, 'The Cosmic Adventuring Boy'"><figcaption class="art-wheel-caption"><span class="awc-title">The Cosmic Adventuring Boy</span><span class="awc-year">2025</span></figcaption></figure>
+          <figure class="art-wheel-piece"><img src="assets/images/fineart-06-surreal.webp" alt="Painting of flamingos beside a palm tree, 'When The Flamingos Go To Flamenco'"><figcaption class="art-wheel-caption"><span class="awc-title">When The Flamingos Go To Flamenco</span><span class="awc-year">2025</span></figcaption></figure>
+          <figure class="art-wheel-piece"><img src="assets/images/fineart-03-flamingo.webp" alt="Surreal symbolic painting with a central eye, 'Eye of Patriarchy'"><figcaption class="art-wheel-caption"><span class="awc-title">Eye of Patriarchy</span><span class="awc-year">2024</span></figcaption></figure>
+          <figure class="art-wheel-piece"><img src="assets/images/fineart-04-flamingo.webp" alt="Painting of a winged fairy among cosmic flowers, 'A Star Fairy'"><figcaption class="art-wheel-caption"><span class="awc-title">A Star Fairy</span><span class="awc-year">2025</span></figcaption></figure>
+          <figure class="art-wheel-piece"><img src="assets/images/fineart-08-osj.webp" alt="Painting of dancers and musicians in a warm terracotta bar with a blue checkered floor, 'Old San Juan'"><figcaption class="art-wheel-caption"><span class="awc-title">Old San Juan</span><span class="awc-year">2026</span></figcaption></figure>
         </div>
       </div>
     </div>
@@ -221,7 +266,7 @@
           <figure class="edu-card2-media">
             <img src="assets/images/edu-kidsart-1.webp" alt="Children's emotion-exploration painting from the preschool art show" loading="lazy">
           </figure>
-          <h3 class="edu-card2-title">Kids Art From Activity <sup class="attr-mark" title="Children's own artwork — not my illustration. See note below.">★</sup></h3>
+          <h3 class="edu-card2-title">Kids Art From Activity <span class="attr-mark" title="Children's own artwork — not my illustration. See note below.">*</span></h3>
           <div class="edu-card2-copy">
             <p>The emotion piece activity was led for a preschool art show, where children were asked to let an emotion exploration guide their color choices and markings.</p>
           </div>
@@ -255,8 +300,8 @@
               <img class="rig-layer rig-brows" src="assets/images/stellina_eyebrows.png" alt="">
               <img class="rig-layer rig-active" src="assets/images/stellina_eyes_open.png" alt="">
               <img class="rig-layer rig-rest" src="assets/images/stellina_eyes_closed.png" alt="">
-              <img class="rig-layer rig-active" src="assets/images/stellina_mouth_open.png" alt="">
-              <img class="rig-layer rig-rest" src="assets/images/stellina_mouth_closed.png" alt="">
+              <img class="rig-layer rig-mouth-open" src="assets/images/stellina_mouth_open.png" alt="">
+              <img class="rig-layer rig-mouth-closed" src="assets/images/stellina_mouth_closed.png" alt="">
             </div>
           </div>
         </div>
@@ -311,30 +356,29 @@
            (avconvert made them bigger; ffmpeg is the fix) + a good Nintendo
            poster frame. -->
       <div class="brand-block">
-        <h3 class="brand-block-title">Presentation &amp; pitch design <sup class="attr-mark" title="Non-commercial class projects; imagery is found/collaged reference, shown as design — not original illustration or client work. See note below.">★</sup></h3>
+        <h3 class="brand-block-title">Presentation &amp; pitch design <span class="attr-mark" title="Non-commercial class projects; imagery is found/collaged reference, shown as design — not original illustration or client work. See note below.">*</span></h3>
         <p class="brand-block-lead"><!-- NOTE FOR ELENA: one line — fast, story-driven decks; layout under pressure. Your words. --></p>
         <ul class="deck-row">
           <li class="deck-card">
             <video class="deck-video" controls preload="none" poster="assets/images/posters/poster-usm-pitch.png">
               <source src="assets/video/usm_pitch.mp4" type="video/mp4">
             </video>
-            <p class="deck-name">USM A.I. Pitch Deck</p>
-            <!-- NOTE FOR ELENA: overview below is drawn from your description — refine/expand in your words. -->
-            <p class="deck-blurb">A pitch deck for a USM A.I. innovation &amp; sustainability competition.</p>
+            <p class="deck-name">AI Pitch Competition (2026)</p>
+            <p class="deck-blurb">For a 2026 AI pitch competition, my team developed a plan to convert fish waste, a natural Maine byproduct, into fertilizer. I synthesized our findings into the final slide deck within our 72-hour window.</p>
           </li>
           <li class="deck-card">
             <video class="deck-video" controls preload="none" poster="assets/images/posters/poster-nintendo.png">
               <source src="assets/video/college_class_nintendo_redesign_canva.mp4" type="video/mp4">
             </video>
-            <p class="deck-name">Nintendo Redesign</p>
-            <p class="deck-blurb">A final redesign of the Nintendo brand.</p>
+            <p class="deck-name">Nintendo Redesign (2025 Marketing Final)</p>
+            <p class="deck-blurb">For a 2025 marketing final, I led a team as captain, a role earned by winning the class competition on a prior assignment, to design a Nintendo product redesign grounded in user data analysis, which revealed rising interest among female users.</p>
           </li>
           <li class="deck-card">
-            <video class="deck-video" controls preload="none" poster="assets/images/posters/poster-daves-wings.png">
-              <source src="assets/video/class_competition_canva_paigebueckers_x_daveshotwings.mp4" type="video/mp4">
+            <video class="deck-video" controls preload="none" poster="assets/images/posters/poster-bueckers-warnerbros.png">
+              <source src="assets/video/class_competition_canva_bueckers_x_warnerbros.mp4" type="video/mp4">
             </video>
-            <p class="deck-name">Paige Bueckers × Dave's Hot Wings</p>
-            <p class="deck-blurb">A campaign concept that took 1st place in my marketing class competition.</p>
+            <p class="deck-name">Bueckers × Warner Bros. Presentation (Marketing Midterm)</p>
+            <p class="deck-blurb">For my marketing midterm, I created a Bueckers × Warner Bros. brand presentation, voted best in class. That result earned me team captain for the course's final project.</p>
           </li>
         </ul>
       </div>
@@ -373,8 +417,8 @@
     <div class="contact-meadow" id="contactMeadow" aria-hidden="true"></div>
     <!-- Footer merged in here so this section reaches the page base -->
     <div class="contact-footer-legal">
-      <p class="attr-legend"><!-- NOTE FOR ELENA: attribution note — refine the wording. --><span class="attr-mark">&#9733;</span> Items marked &#9733; aren&rsquo;t my original illustration — the children&rsquo;s artwork is the students&rsquo; own, and the presentation decks are non-commercial class projects using found &amp; collaged reference, shown as design/composition, not original art or client work.</p>
-      <p class="contact-credit">&copy; <span id="year"></span> Elena Parr. Handmade, always.</p>
+      <p class="attr-legend"><!-- NOTE FOR ELENA: draft in your voice — tune freely. Reworked so it no longer fights the credit line ("Handmade, always" contradicted the * that flags work that ISN'T yours). The credit now reads "Everything else, handmade." to answer the exceptions below. --><span class="attr-mark">*</span> A couple of things here aren&rsquo;t mine to sign: the children&rsquo;s paintings belong to the kids who made them, and the pitch decks are non-commercial class projects built from found &amp; collaged reference &mdash; shown as design, not original illustration.</p>
+      <p class="contact-credit">&copy; <span id="year"></span> Elena Parr. Everything else, handmade.</p>
     </div>
   </section>
 
@@ -382,6 +426,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/main.js?v=64"></script>
+<script src="js/main.js?v=90"></script>
 </body>
 </html>

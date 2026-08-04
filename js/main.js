@@ -45,39 +45,30 @@ primaryNav.querySelectorAll('a').forEach(link => {
   });
 });
 
-/* ---------- Hero hand-lettering ----------
-   Plays erase clip, then the "Nice to meet ya" write clip, then hands off
-   to the matching final still so it holds crisply afterward (rather than
-   lingering on a paused video frame).
-   Falls back to the final still directly for reduced-motion / no-js users. */
-const heroClipErase = document.getElementById('heroClipErase');
-const heroClip = document.getElementById('heroClip');
-const heroClipFinal = document.getElementById('heroClipFinal');
-if (heroClipErase && heroClip && heroClipFinal) {
+/* ---------- Hero title ----------
+   Videos scrapped 2026-08-04 (Elena): the hero now lands straight on the interactive
+   "HI, I'M ELENA PARR" title (Elena's per-letter PNGs; each ELENA PARR letter zooms on
+   hover). Just reveal it on arrival. */
+const heroName = document.getElementById('heroName');
+if (heroName) {
+  // pop order: "HI, I'M" first, then each ELENA PARR letter in its number order, then the period
+  const pops = [heroName.querySelector('.hero-name-prefix'), ...heroName.querySelectorAll('.hero-letter')].filter(Boolean);
   if (prefersReducedMotion) {
-    heroClipErase.classList.add('is-hidden');
-    heroClip.classList.add('is-hidden');
-    heroClipFinal.classList.add('is-visible');
+    pops.forEach((el) => { el.style.opacity = '1'; });
   } else {
-    heroClipErase.currentTime = 0;
-    // Hold on the static first frame ("Hi, I'm Elena") for a beat before
-    // erasing starts. This is now also exactly the buffer that lets the
-    // arrival pop-in (below) finish visually before the erase/rewrite
-    // story continues — no explicit coordination needed between them.
-    setTimeout(() => {
-      heroClipErase.play().catch(() => {});
-    }, 3500);
-    heroClipErase.addEventListener('ended', () => {
-      heroClipErase.classList.add('is-hidden');
-      heroClip.classList.remove('is-hidden');
-      heroClip.currentTime = 0;
-      heroClip.playbackRate = 1.1; // sped up 10% per feedback
-      heroClip.play().catch(() => {});
+    heroName.classList.add('is-visible');
+    pops.forEach((el, i) => {
+      setTimeout(() => {
+        el.style.opacity = '1';
+        // bubble pop + wobble in; scales from the glyph's own centre (CSS transform-origin)
+        el.animate([
+          { opacity: 0, transform: 'scale(0.15)' },
+          { opacity: 1, transform: 'scale(1.28) rotate(-5deg)', offset: 0.55 },
+          { transform: 'scale(0.92) rotate(3deg)', offset: 0.78 },
+          { opacity: 1, transform: 'scale(1) rotate(0deg)' },
+        ], { duration: 560, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
+      }, 260 + i * 95);
     });
-    // No swap on 'ended' — the video simply pauses on its last frame and
-    // stays exactly where it is. Swapping to a separate static image (even
-    // with a crossfade) introduced a visible seam/gap; freezing in place
-    // removes that entirely since nothing changes elements.
   }
 }
 // "Hi, I'm Elena" (the static first frame, always visible before the erase
@@ -179,6 +170,103 @@ if ('IntersectionObserver' in window) {
   track.innerHTML += track.innerHTML;
 })();
 
+/* (Brainbow was an animated video; replaced 2026-08-04 with the stationary trimmed logo
+   image — Elena's call — so no JS is needed anymore.) */
+
+/* ---------- Fine Art: click-through DECK (flashcard vibes) ----------
+   The six studies stack as a messy tilted pile; click the top card / the arrows /
+   ← → keys to flip through. Under reduced motion we leave the CSS grid fallback
+   (all six visible, no motion) rather than enhancing. LAYOUT is keyed by DEPTH in
+   the pile (not by card), so the pile always looks the same messy shape as cards
+   cycle through it. */
+(function setupFineartDeck() {
+  const stack = document.getElementById('deckStack');
+  if (!stack || prefersReducedMotion) return;
+  const cards = Array.from(stack.querySelectorAll('.fdeck-card'));
+  if (cards.length < 2) return;
+
+  const idxEl = document.getElementById('deckIndex');
+  const prevBtn = document.getElementById('deckPrev');
+  const nextBtn = document.getElementById('deckNext');
+
+  // per-depth offsets (px) + rotation (deg) — hand-tuned to read as a loose pile
+  const LAYOUT = [
+    { x: 0,   y: 0,   r: -3 },
+    { x: 16,  y: 9,   r: 4  },
+    { x: -14, y: 15,  r: -6 },
+    { x: 11,  y: -7,  r: 6  },
+    { x: -9,  y: 13,  r: -4 },
+    { x: 7,   y: 7,   r: 8  },
+  ];
+
+  cards.forEach((c, i) => { c.dataset.n = String(i + 1); }); // 1-based drawing number
+  let order = cards.slice();     // order[0] = the card on top
+  let animating = false;
+
+  function place(card, depth) {
+    const L = LAYOUT[depth] || LAYOUT[LAYOUT.length - 1];
+    card.style.zIndex = String(100 - depth);
+    card.style.transform =
+      `translate(${L.x}px, ${L.y}px) rotate(${L.r}deg) scale(${(1 - depth * 0.03).toFixed(3)})`;
+    card.style.opacity = '1';
+    card.classList.toggle('is-front', depth === 0);
+  }
+  function render() {
+    order.forEach(place);
+    if (idxEl) idxEl.textContent = order[0].dataset.n;
+  }
+
+  function next() {
+    if (animating) return;
+    animating = true;
+    const leaving = order[0];
+    leaving.style.zIndex = '200';
+    leaving.classList.add('is-leaving');
+    leaving.style.transform = 'translate(0, -42%) rotate(7deg) scale(1.06)';
+    leaving.style.opacity = '0';
+    setTimeout(() => {
+      order.push(order.shift());              // top card → bottom of the pile
+      leaving.style.transition = 'none';      // snap to the back while invisible
+      place(leaving, order.length - 1);
+      leaving.style.opacity = '0';
+      leaving.getBoundingClientRect();        // force reflow so the snap isn't animated
+      leaving.classList.remove('is-leaving');
+      leaving.style.transition = '';
+      render();                               // fades it back in at the bottom
+      animating = false;
+    }, 300);
+  }
+
+  function prev() {
+    if (animating) return;
+    animating = true;
+    const incoming = order[order.length - 1]; // bottom card comes to the top
+    incoming.style.transition = 'none';
+    incoming.style.zIndex = '200';
+    incoming.style.transform = 'translate(0, -42%) rotate(7deg) scale(1.06)';
+    incoming.style.opacity = '0';
+    incoming.getBoundingClientRect();
+    incoming.style.transition = '';
+    order.unshift(order.pop());
+    render();                                 // slides/fades it down into the front slot
+    setTimeout(() => { animating = false; }, 300);
+  }
+
+  stack.classList.add('is-fdeck');
+  render();
+
+  stack.addEventListener('click', next);
+  if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+  if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+  stack.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault(); next();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault(); prev();
+    }
+  });
+})();
+
 /* Fit-to-width section titles were tried 2026-08-03 (Elena's "B") and reverted —
    she preferred the smaller uniform size. Titles now use the CSS clamp on
    .section-title (~115px cap). */
@@ -191,21 +279,24 @@ if ('IntersectionObserver' in window) {
   const stage = document.getElementById('artWheel');
   const track = document.getElementById('artWheelTrack');
   if (!stage || !track) return;
-  track.innerHTML += track.innerHTML; // duplicate once: lets tight spacing wrap the full circle with no gaps
   const pieces = Array.from(track.querySelectorAll('.art-wheel-piece'));
   const count = pieces.length;
   if (!count) return;
 
   const ANGLE_SPAN = 130;
-  const ANGLE_STEP = 26; // tight, matches the original spacing — safe now that pieces repeat around the full circle
+  // Even spacing that fills the circle EXACTLY once (2026-08-04, Elena): the old duplicate-
+  // the-track + fixed-step approach made 8×2 pieces span 544° ≠ 360°, so duplicates wrapped
+  // back on top of others (overlap) with uneven gaps. Spacing pieces at 360/count fills the
+  // ring once, so each piece appears exactly once, evenly, and scrolls seamlessly.
+  const ANGLE_STEP = 360 / count;
   let offset = 0;
 
   function layout() {
     const w = stage.clientWidth;
     const h = stage.clientHeight;
     const centerX = w / 2;
-    const centerY = h * 0.44;
-    const RADIUS = w * 0.46;
+    const centerY = h * 0.42;
+    const RADIUS = w * 0.42; // tighter circle → paintings sit closer together (Elena 2026-08-04; was 0.56)
     const half = ANGLE_SPAN / 2;
 
     pieces.forEach((piece, i) => {

@@ -20,7 +20,8 @@
   --color-plum-mauve: #6E4A63; /* readable plum-family body text (lilac is too light to read) */
   --color-copper: #AE7222;    /* Copperwood — PRIMARY metallic accent: links, underlines */
   --color-lilac: #C69AB4;     /* decorative only (too light for text) — it's lit-up plum */
-  --color-pop: #FF6DC4;       /* Bubblegum — rare reward pop; the loud member of the plum family */
+  /* (Bubblegum-as-primary was tested 2026-08-04 and dropped — see the
+     bubblegum-accent-not-primary memory. The --color-pop token was unused, removed.) */
 
   /* Legacy aliases remapped so existing rules cascade to the new palette.
      'teal' is retired — those usages (eyebrows, focus ring) now read as plum. */
@@ -367,11 +368,11 @@ p { margin: 0 0 var(--sp-2); }
      fades out gradually into the page instead of stopping at a hard,
      visible line — the recording's "white" is never quite pure white,
      which is what made the edge noticeable before. */
-  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
-              linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%),
+              linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
   mask-composite: intersect;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
-                       linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%),
+                       linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
   -webkit-mask-composite: source-in;
 }
 .hero-clip-final {
@@ -383,16 +384,64 @@ p { margin: 0 0 var(--sp-2); }
   object-position: left center;
   opacity: 0;
   mix-blend-mode: multiply;
-  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
-              linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%),
+              linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
   mask-composite: intersect;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
-                       linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%),
+                       linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
   -webkit-mask-composite: source-in;
   transition: opacity 200ms var(--ease-out);
 }
 .hero-clip-final.is-visible { opacity: 1; }
 .hero-clip.is-hidden { opacity: 0; }
+
+/* ---- Returning interactive title "HI, I'M ELENA PARR" (2026-08-04, Elena) ----
+   Rebuilt from Elena's own per-letter PNGs (each on the same 2550×1298 canvas, so
+   stacking them recomposes her exact layout). The hero-video sequence reveals it
+   after "nice to meet ya". Each letter's hover region is clip-path'd to its own
+   glyph (measured bboxes) so the wobble is truly per-letter; transform-origin is the
+   glyph's centre so it pivots naturally. Transform carries the clip, so the wobble
+   is never clipped. */
+.hero-name {
+  position: relative;
+  width: min(92vw, 720px);
+  aspect-ratio: 2550 / 1298;
+  /* the art has ~21% empty top/bottom + ~5.3% empty left baked into the canvas — pull it
+     tight so the title doesn't float, and shift left so the visible text lines up with the
+     tagline's left edge (measured content-left = 5.33%). */
+  margin: -3.5% 0 -5.5%;
+  transform: translateX(-5.33%);
+  z-index: 4;
+}
+.hero-name img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* each piece starts hidden and bubble-pops in one at a time on load (setupHeroName, WAA) */
+.hero-name-prefix, .hero-letter { opacity: 0; }
+.hero-name-prefix { pointer-events: none; }
+.hero-letter { transition: transform 180ms var(--ease-out); will-change: transform, opacity; }
+/* big springy zoom that SETTLES enlarged while hovered (forwards), then springs back on
+   mouse-out via the transition above. Much bigger + snappier per Elena (2026-08-04). */
+.hero-letter:hover { animation: heroLetterWobble 0.45s var(--ease-out) forwards; z-index: 30; }
+@keyframes heroLetterWobble {
+  0%   { transform: rotate(0deg) scale(1); }
+  18%  { transform: rotate(-16deg) scale(1.62); }
+  42%  { transform: rotate(12deg) scale(1.42); }
+  64%  { transform: rotate(-7deg) scale(1.34); }
+  82%  { transform: rotate(3deg) scale(1.3); }
+  100% { transform: rotate(0deg) scale(1.28); }
+}
+.hl-e1     { clip-path: inset(53.54% 87.76% 21.8% 5.33%);  transform-origin: 8.78% 65.87%; }
+.hl-l2     { clip-path: inset(53.54% 79.96% 21.8% 12.12%); transform-origin: 16.08% 65.87%; }
+.hl-e3     { clip-path: inset(53.54% 72.24% 21.8% 20.86%); transform-origin: 24.31% 65.87%; }
+.hl-n4     { clip-path: inset(53.54% 61.88% 21.8% 28.98%); transform-origin: 33.55% 65.87%; }
+.hl-a5     { clip-path: inset(53.54% 51.06% 21.8% 39.22%); transform-origin: 44.08% 65.87%; }
+.hl-p6     { clip-path: inset(53.54% 37.29% 21.8% 54.35%); transform-origin: 58.53% 65.87%; }
+.hl-a7     { clip-path: inset(53.54% 27.33% 21.8% 63.06%); transform-origin: 67.86% 65.87%; }
+.hl-r8     { clip-path: inset(53.54% 17.37% 21.8% 73.8%);  transform-origin: 78.22% 65.87%; }
+.hl-r9     { clip-path: inset(53.54% 7.41% 21.8% 83.84%);  transform-origin: 88.22% 65.87%; }
+.hl-period { clip-path: inset(72.5% 2.04% 21.42% 94.47%);  transform-origin: 96.22% 75.54%; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-letter:hover { animation: none; transform: scale(1.28); z-index: 30; }
+}
 
 .hero-static-fallback {
   /* visually hidden always now — the final still image serves this purpose for everyone,
@@ -543,22 +592,67 @@ p { margin: 0 0 var(--sp-2); }
 }
 .pub-overview-text {
   font-family: var(--font-body); font-size: 1.05rem; line-height: 1.6;
-  color: #EFE6EC; margin: 0;
+  color: #EFE6EC; margin: 0 0 var(--sp-3);
 }
+.pub-overview-text:last-child { margin-bottom: 0; }
 /* About layout (2026-08-03): books left-flanked, overview copy in a right column
    to balance the left-weighted imagery. Pro working photos will join the left
    column later. Stacks to a single column on mobile. */
-.about-layout {
-  display: grid;
-  grid-template-columns: auto minmax(240px, 34ch);
-  align-items: start;           /* overview top-aligns with the book covers */
-  gap: clamp(var(--sp-6), 6vw, var(--sp-12));
-  margin-top: var(--sp-4);
-}
-.about-layout .pub-overview { margin-top: 0; max-width: none; }  /* it's a column now, not a block below */
+/* Story-led (2026-08-04, Elena): the two covers sit as a row up top (the "published
+   at 15" credential), then the bio flows beneath at a comfortable reading measure.
+   Replaced the old books-left / narrow-bio-right 2-col, which stranded the covers and
+   crammed the bio into a too-narrow column. */
+.about-layout { margin-top: var(--sp-4); }
+.about-layout .pub-overview { margin-top: var(--sp-8); max-width: 62ch; }
 @media (max-width: 860px) {
-  .about-layout { grid-template-columns: 1fr; gap: var(--sp-8); }
-  .about-layout .pub-overview { margin-top: var(--sp-4); }
+  .about-layout .pub-overview { margin-top: var(--sp-6); }
+}
+
+/* ===== About — tight "newspaper" masonry (2026-08-04, Elena): two independent columns
+   that pack their items separately, so text + image cards break up like bricks (no aligned
+   rows). Body copy is justified for the newspaper feel; images on lilac "mat" cards. ===== */
+.about-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;   /* columns match heights so the brainbow can drop to align with the last paragraph */
+  column-gap: clamp(var(--sp-4), 3vw, var(--sp-8));
+  margin-top: var(--sp-6);
+}
+.about-col { display: flex; flex-direction: column; gap: clamp(var(--sp-4), 2.6vw, var(--sp-6)); }
+/* push the Brainbow card to the bottom of its column so its title lines up with the bottom
+   of the final (Tampa) paragraph in the other column, and cap its width so the columns end
+   together (measured: ~320px aligns at the ~1160px width; Elena 2026-08-04) */
+.about-card--brainbow { margin-top: auto; width: 100%; max-width: 320px; }
+.about-para  {
+  font-family: var(--font-body); font-size: 1.02rem; line-height: 1.6; color: #EFE6EC;
+  margin: 0; text-align: justify; hyphens: auto;
+}
+
+/* image cards — lilac rounded mat + inset artwork + lift shadow */
+.about-card { margin: 0; }
+.about-card-media {
+  background: var(--color-lilac);
+  border-radius: 20px;
+  padding: clamp(9px, 1.1vw, 15px);
+  box-shadow: var(--shadow-lift);
+  overflow: hidden;
+}
+.about-card-media--pad { padding: clamp(14px, 2vw, 26px); }
+.about-card-media img,
+.about-card-media video { display: block; width: 100%; height: auto; border-radius: 12px; }
+.about-cap { margin-top: var(--sp-1); text-align: left; }
+.about-cap-title {
+  display: block; font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1rem, 1.5vw, 1.3rem); letter-spacing: 0.02em; line-height: 1.05; color: #FBFAF7;
+}
+.about-cap-sub { display: block; font-family: var(--font-body); font-size: 0.85rem; color: #D9C2D2; margin-top: 0.15rem; }
+
+/* the two published books sit side by side within the left column — wider gap so the two
+   lilac mats read as separate cards, not one block (Elena 2026-08-04) */
+.about-books { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(var(--sp-4), 3.5vw, var(--sp-8)); align-items: start; }
+
+@media (max-width: 760px) {
+  .about-cols { grid-template-columns: 1fr; }
 }
 
 /* ---- Achievements: now its own warm-white section (split from Publications) ---- */
@@ -574,7 +668,7 @@ p { margin: 0 0 var(--sp-2); }
 .the-archive-title { color: var(--color-plum); }
 .the-archive-intro { color: var(--color-plum-mauve); }
 .section--fineart { background: var(--color-bg-alt); }
-.section--edu { background: var(--color-bg); }
+.section--edu { background: var(--color-bg); padding-bottom: 0; }   /* lilac panel runs flush into Presentation — no warm-white gap (Elena) */
 .section--branding { background: var(--color-bg-alt); }
 /* Scheme C is now global (see .eyebrow / .section-title / .section-intro):
    lilac eyebrow, plum title, plum-mauve body — across all standard sections +
@@ -1220,40 +1314,56 @@ p { margin: 0 0 var(--sp-2); }
 /* Fine Art — still gallery grid (replaced the film-reel belt per Elena's
    mockup). 3×2 charcoal/graphite studies on a soft lilac ground, so the
    foundation drawings read like a gallery wall rather than a moving strip. */
-.fineart-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(1.25rem, 3vw, 2.5rem);
-  margin: var(--sp-4) 0 var(--sp-12);
-  /* No panel: cards float directly on the section so the ambient rainbow
-     light shows around them. The lilac "room" was only a Canva stand-in
-     because the mockup couldn't reproduce that glow. */
+/* ---- Fine Art click-through DECK (replaced the 3×2 grid 2026-08-04 — a grid here
+   competed with the Achievements sticker grid directly above; the deck gives Fine Art
+   its own gesture). setupFineartDeck() adds .is-fdeck to enhance the fallback into a pile.
+   NB: classes are `fdeck-*` NOT `deck-*` — the Presentation pitch cards already own
+   `.deck-card`/`.deck-row`/`.deck-video` (collision blanked/clipped them, see Traps). ---- */
+.fineart-deck { margin: var(--sp-6) 0 var(--sp-12); }
+
+/* Fallback (no JS / reduced motion): a calm centered grid so all six still show. */
+.fdeck-stack {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: clamp(1rem, 2.5vw, 2rem);
 }
-.fineart-grid-item {
-  margin: 0;
-  border-radius: 16px;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  background: var(--color-card-bg);
-  box-shadow: var(--shadow-soft);
-  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+.fdeck-card {
+  margin: 0; width: min(30%, 340px); aspect-ratio: 4 / 3;
+  border-radius: 16px; overflow: hidden;
+  background: var(--color-card-bg); box-shadow: var(--shadow-soft);
 }
-.fineart-grid-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* uniform cards like the mockup; adjust object-position per image if a crop clips something important */
-  display: block;
+.fdeck-card img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* Enhanced: the messy tilted pile. Cards are stacked absolutely and positioned by JS. */
+.fdeck-stack.is-fdeck {
+  position: relative; display: block;
+  width: min(90%, 520px); aspect-ratio: 4 / 3;
+  margin-inline: auto; cursor: pointer; touch-action: manipulation;
+  overflow: visible;
 }
-.fineart-grid-item:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lift);
+.fdeck-stack.is-fdeck:focus-visible { outline: 2px solid var(--color-copper); outline-offset: 10px; border-radius: 20px; }
+.is-fdeck .fdeck-card {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  transform-origin: 50% 60%;
+  transition: transform 0.42s var(--ease-out), opacity 0.42s var(--ease-out), box-shadow 0.42s var(--ease-out);
 }
-@media (max-width: 860px) {
-  .fineart-grid { grid-template-columns: repeat(2, 1fr); }
+.is-fdeck .fdeck-card.is-front { box-shadow: var(--shadow-lift); }
+.is-fdeck .fdeck-card.is-leaving { transition-duration: 0.3s; }
+
+.fdeck-nav { display: flex; align-items: center; justify-content: center; gap: var(--sp-3); margin-top: var(--sp-6); }
+.fdeck-btn {
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 1.5px solid var(--color-plum); background: transparent; color: var(--color-plum);
+  font-size: 1.5rem; line-height: 1; cursor: pointer; display: grid; place-items: center;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
-@media (max-width: 520px) {
-  .fineart-grid { grid-template-columns: 1fr; }
+.fdeck-btn:hover { background: var(--color-plum); color: #FBFAF7; }
+.fdeck-btn:active { transform: scale(0.9); }
+.fdeck-count { font-family: var(--font-body); font-weight: 600; color: var(--color-plum-mauve); margin: 0; min-width: 4ch; text-align: center; letter-spacing: 0.06em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .is-fdeck .fdeck-card { transition: opacity 0.2s linear; }
 }
+@media (max-width: 520px) { .fdeck-card { width: min(46%, 300px); } }
 
 .art-wheel-label {
   text-align: center;
@@ -1274,7 +1384,7 @@ p { margin: 0 0 var(--sp-2); }
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  height: clamp(420px, 44vw, 580px);
+  height: clamp(480px, 50vw, 660px);
   overflow: hidden;
 }
 .art-wheel-track {
@@ -1285,19 +1395,29 @@ p { margin: 0 0 var(--sp-2); }
   position: absolute;
   top: 0;
   left: 0;
-  width: clamp(170px, 16vw, 260px);
-  aspect-ratio: 3/4;
+  width: clamp(160px, 14vw, 230px);
   margin: 0;
   will-change: transform, opacity;
 }
 .art-wheel-piece img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 3/4;
+  height: auto;
   object-fit: cover;
   border-radius: 30%;
   box-shadow: var(--shadow-lift);
   transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
   display: block;
+}
+/* ghost gallery labels under each piece (Elena 2026-08-04) — intentionally faint */
+.art-wheel-caption { margin-top: 0.6rem; text-align: center; padding: 0 0.25rem; }
+.art-wheel-caption .awc-title {
+  display: block; font-family: var(--font-body); font-style: italic;
+  font-size: 0.8rem; line-height: 1.25; color: var(--color-plum-mauve); opacity: 0.72;
+}
+.art-wheel-caption .awc-year {
+  display: block; margin-top: 0.15rem; font-family: var(--font-body);
+  font-size: 0.7rem; letter-spacing: 0.08em; color: var(--color-ink-soft); opacity: 0.5;
 }
 .art-wheel-piece:hover img {
   transform: scale(1.14);
@@ -1364,15 +1484,25 @@ p { margin: 0 0 var(--sp-2); }
 .edu-panel {
   margin-top: var(--sp-8);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.92fr);
+  /* two SMALL card columns packed left + the character taking the rest → left-flanked,
+     Stellina floats in the open lilac on the right (Elena, 2026-08-04) */
+  grid-template-columns: minmax(0, 340px) minmax(0, 340px) minmax(0, 1fr);
   align-items: start;
-  gap: clamp(var(--sp-5), 3vw, var(--sp-9));
+  gap: clamp(var(--sp-4), 3vw, var(--sp-8));   /* NB: --sp-5/-7/-9 don't exist — using defined tokens */
   background: #F3E7EF;
-  border-radius: var(--radius-art);
-  padding: clamp(var(--sp-7), 4vw, var(--sp-12));   /* generous breathing room off the panel edges (Elena) */
+  /* full-bleed lilac band: the colour spans the whole viewport (100vw technique — safe,
+     html/#main have overflow-x:hidden). Left padding aligns the cards under the title
+     (matches .section-inner's 1340px column) so the left margin reads equal to the page;
+     the band still runs to the right screen edge. */
+  width: 100vw; margin-left: 50%; transform: translateX(-50%);
+  border-radius: 0;
+  padding-top: clamp(var(--sp-6), 4vw, var(--sp-12));
+  padding-bottom: clamp(var(--sp-6), 4vw, var(--sp-12));
+  padding-left: max(var(--sp-4), calc((100vw - 1340px) / 2));
+  padding-right: max(var(--sp-4), calc((100vw - 1340px) / 2));
 }
 /* footnote-star used to flag work that isn't Elena's original illustration */
-.attr-mark { color: var(--color-copper); font-size: 0.62em; font-weight: 700; vertical-align: super; margin-left: 0.2em; cursor: help; }
+.attr-mark { color: var(--color-copper); font-size: 0.9em; font-weight: 700; vertical-align: super; margin-left: 0.15em; cursor: help; }
 /* the two cards */
 .edu-card2 { display: flex; flex-direction: column; margin: 0; }
 .edu-card2-media {
@@ -1410,19 +1540,28 @@ p { margin: 0 0 var(--sp-2); }
 .stellina-rig { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1214 / 1933; }   /* larger (Elena) */
 .rig-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .rig-head { position: absolute; inset: 0; transform-origin: 50% 35%; animation: stelSway 6.5s ease-in-out infinite; }
-.rig-brows { animation: stelBrows 6.5s ease-in-out infinite; }
-.rig-active { animation: stelActive 6.5s ease-in-out infinite; }   /* eyes-open + mouth-open */
-.rig-rest { opacity: 0; animation: stelRest 6.5s ease-in-out infinite; }   /* eyes-closed + mouth-closed */
+.rig-brows { animation: stelBrows 5s ease-in-out infinite; }
+.rig-active { animation: stelActive 5s ease-in-out infinite; }   /* eyes-open (quick blink only) */
+.rig-rest { opacity: 0; animation: stelRest 5s ease-in-out infinite; }   /* eyes-closed (quick blink only) */
+/* Mouth DECOUPLED from the blink (Elena 2026-08-04): it must NOT snap with the eyes.
+   Its own long 10s cycle — a slow, gentle open↔closed crossfade every now and then. */
+.rig-mouth-open   { animation: stelMouthOpen 10s ease-in-out infinite; }
+.rig-mouth-closed { opacity: 0; animation: stelMouthClosed 10s ease-in-out infinite; }
+/* Blink retuned 2026-08-04 (Elena): a quick, realistic ~250ms blink once per 5s cycle —
+   the old version dwelled closed for ~2s, which read as sleepy. Sway stays on its own 6.5s. */
 @keyframes stelSway   { 0%, 100% { transform: rotate(-1.3deg); } 50% { transform: rotate(1.3deg); } }
-@keyframes stelBrows  { 0%, 62%, 100% { transform: translateY(0); } 78%, 88% { transform: translateY(1.1%); } }
-@keyframes stelActive { 0%, 68% { opacity: 1; } 78%, 88% { opacity: 0; } 98%, 100% { opacity: 1; } }
-@keyframes stelRest   { 0%, 68% { opacity: 0; } 78%, 88% { opacity: 1; } 98%, 100% { opacity: 0; } }
+@keyframes stelBrows  { 0%, 89%, 100% { transform: translateY(0); } 93% { transform: translateY(1%); } }
+@keyframes stelActive { 0%, 91% { opacity: 1; } 93%, 94% { opacity: 0; } 96%, 100% { opacity: 1; } }
+@keyframes stelRest   { 0%, 91% { opacity: 0; } 93%, 94% { opacity: 1; } 96%, 100% { opacity: 0; } }
+/* slow mouth: open most of the cycle, gentle ~1.2s close, hold ~2s, gentle ~1.2s open */
+@keyframes stelMouthOpen   { 0%, 50% { opacity: 1; } 62%, 84% { opacity: 0; } 96%, 100% { opacity: 1; } }
+@keyframes stelMouthClosed { 0%, 50% { opacity: 0; } 62%, 84% { opacity: 1; } 96%, 100% { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   .story-belt-track { animation: none; }
   .story-belt { overflow-y: auto; }
-  .rig-head, .rig-brows, .rig-active, .rig-rest { animation: none; }
-  .rig-active { opacity: 1; } .rig-rest { opacity: 0; }   /* rest at eyes-open + happy mouth */
+  .rig-head, .rig-brows, .rig-active, .rig-rest, .rig-mouth-open, .rig-mouth-closed { animation: none; }
+  .rig-active, .rig-mouth-open { opacity: 1; } .rig-rest, .rig-mouth-closed { opacity: 0; }   /* rest at eyes-open + mouth-open */
 }
 @media (max-width: 860px) { .edu-panel { grid-template-columns: 1fr; } }
 
@@ -1554,10 +1693,11 @@ p { margin: 0 0 var(--sp-2); }
   gap: var(--sp-4);
 }
 .deck-card {
-  background: var(--color-card-bg);
+  background: #F1E6EF; /* light lilac (the Stellina gradient tone) — was near-white (Elena 2026-08-04) */
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-soft);
   overflow: hidden;
+  display: flex; flex-direction: column;   /* even, full-height boxes across the row */
   transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
 .deck-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
@@ -1786,7 +1926,7 @@ p { margin: 0 0 var(--sp-2); }
   color: rgba(250, 245, 236, 0.62);
   font-size: 0.72rem; line-height: 1.5;
 }
-.attr-legend .attr-mark { color: var(--color-lilac); font-size: 1em; vertical-align: baseline; margin: 0 0.15em 0 0; }
+.attr-legend .attr-mark { color: var(--color-copper); font-size: 1em; vertical-align: baseline; margin: 0 0.15em 0 0; }
 .contact-credit {
   margin: 0;
   text-align: center;
