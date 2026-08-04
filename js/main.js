@@ -296,7 +296,9 @@ if ('IntersectionObserver' in window) {
     const h = stage.clientHeight;
     const centerX = w / 2;
     const centerY = h * 0.42;
-    const RADIUS = w * 0.42; // tighter circle → paintings sit closer together (Elena 2026-08-04; was 0.56)
+    // wider circle on mobile so the paintings don't crowd/overlap (Elena, session 7); the
+    // desktop 0.42 stays tight as tuned before.
+    const RADIUS = w * (w <= 760 ? 0.58 : 0.42);
     const half = ANGLE_SPAN / 2;
 
     pieces.forEach((piece, i) => {

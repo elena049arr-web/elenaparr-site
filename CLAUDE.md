@@ -59,7 +59,7 @@ Hero → **About** → **Achievements** (illustrated sticker sheet) → Fine Art
 
 (The standalone **Brainbow reveal** section was removed 2026-08-02. Asset `brainbow-animate.mp4` kept in case it's wanted back.)
 
-**Current build state (2026-08-04, session 6):** ALL sections built + heavily reworked this session — **Hero** (videos SCRAPPED; now a bespoke interactive "HI, I'M ELENA PARR" title from Elena's per-letter PNGs — bubble-pop staggered entrance, hover-zoom letters, aligned to the tagline), **About** (rebuilt AGAIN to Elena's mockup: tight 2-col "newspaper brick" masonry — justified copy, lilac "mat" image cards, Buttons comic + 2 books + trimmed Brainbow logo), **Achievements** (sticker sheet, unchanged), **Fine Art** (grid → click-through DECK + Personal Studio wheel now labeled with ghost titles & evenly spaced), **Design for Learning** (blink retimed, mouth decoupled), **Presentation** (copy = Elena's revised words, Bueckers×Warner Bros correction, cards → light-lilac + even), Stellina scene, Contact. **The big remaining work: MOBILE (untouched) then THE DEPLOY (still nothing live).** Context: portfolio link for a creative director; the CD meeting was 2026-08-05.
+**Current build state (2026-08-04, session 6):** ALL sections built + heavily reworked this session — **Hero** (videos SCRAPPED; now a bespoke interactive "HI, I'M ELENA PARR" title from Elena's per-letter PNGs — bubble-pop staggered entrance, hover-zoom letters, aligned to the tagline), **About** (rebuilt AGAIN to Elena's mockup: tight 2-col "newspaper brick" masonry — justified copy, lilac "mat" image cards, Buttons comic + 2 books + trimmed Brainbow logo), **Achievements** (sticker sheet, unchanged), **Fine Art** (grid → click-through DECK + Personal Studio wheel now labeled with ghost titles & evenly spaced), **Design for Learning** (blink retimed, mouth decoupled), **Presentation** (copy = Elena's revised words, Bueckers×Warner Bros correction, cards → light-lilac + even), Stellina scene, Contact. **Session 7 (2026-08-04) did the MOBILE PASS (see the "Done (session 7)" block) — so the big remaining work is now just THE DEPLOY (still nothing live).** Context: portfolio link for a creative director; the CD meeting was 2026-08-05.
 
 ---
 
@@ -105,7 +105,7 @@ Hero → **About** → **Achievements** (illustrated sticker sheet) → Fine Art
 
 **The local browser-preview pane runs at `viewportH: 0`.** That single fact explains most verification pain: `vh` units read as 0px, `scrollTo` does nothing, screenshots snap to the top, and rAF animations pause. It's a pane limitation, **not broken code** — verify viewport/scroll/animation behaviour structurally (computed styles, `fetch(...,{cache:'no-store'})` on the served file, canvas `getImageData` pixel measurement) and have Elena confirm the *feel* on her real browser. Measuring transparent-PNG content bounds via canvas (padding, centroids, density-per-row) was the key to positioning the meadow precisely.
 
-**Cache-busting / stale serving.** css/js are linked as `css/style.css?v=N` + `js/main.js?v=N`. **Bump N on every css/js change** or the preview — and Elena's deploy — serves stale files. This bit us repeatedly (missing flowers, un-run JS). Current version: **v=90**. (Note: **videos have NO ?v= cache-bust** — replacing an mp4 in place serves the browser-cached old one. Fix: give the new video a NEW filename and update the src. Bit us with the hero clips — see Traps.)
+**Cache-busting / stale serving.** css/js are linked as `css/style.css?v=N` + `js/main.js?v=N`. **Bump N on every css/js change** or the preview — and Elena's deploy — serves stale files. This bit us repeatedly (missing flowers, un-run JS). Current version: **v=94**. (Note: **videos have NO ?v= cache-bust** — replacing an mp4 in place serves the browser-cached old one. Fix: give the new video a NEW filename and update the src. Bit us with the hero clips — see Traps.)
 
 **Footer-outside-`#main` stacking.** To layer the meadow OVER the footer but BELOW the heading text, the clean fix was **merging the footer into the contact section** (making it the last element), not fighting z-index across the `#main`/`<footer>` boundary. Do **not** give `#main` a z-index (caused an earlier bug).
 
@@ -119,7 +119,7 @@ Hero → **About** → **Achievements** (illustrated sticker sheet) → Fine Art
 
 **Large canvas→webp exports: decode from the tool-results FILE, not a pasted string.** To make a webp from a browser `canvas.toDataURL('image/webp')` (used for the doll re-crop, Old San Juan, the trimmed Brainbow), the base64 is huge. Pasting it into a Bash heredoc corrupts it ("Incorrect padding"). Reliable path: make the JS return a payload big enough that the tool auto-saves it to a `tool-results/*.txt` file, then `python3 -c "import json,base64; ...json.load(...)[0]['text']..."` decode from THAT file. Flatten onto white first (`ctx.fillStyle='#fff';fillRect`) if a white card background is wanted.
 
-**Independent-column ("brick") masonry breaks reading order.** The About section is two separate `.about-col` stacks, which is why the bricks don't align in rows — but it also means the DOM (and screen-reader / stacked-mobile order) is *all of left column, then all of right column*, so the bio chapters read 1, 3, 2. **This is a known a11y/mobile debt — fix the interleave in the mobile pass** (left as a NOTE in the markup).
+**Independent-column ("brick") masonry breaks reading order.** The About section is two separate `.about-col` stacks, which is why the bricks don't align in rows — but it also means the DOM (and screen-reader / stacked-mobile order) is *all of left column, then all of right column*, so the bio chapters read 1, 3, 2. **FIXED in the mobile pass (session 7):** on `≤760px` the two `.about-col` wrappers are dissolved with `display:contents` (their children become direct grid items of `.about-cols`), then re-sequenced in true time order with `order:1…6` (intro'19 → books → MECA'21 → Buttons comic → Tampa'24 → Brainbow). Desktop masonry is untouched. If you edit the About markup, keep the two-column DOM structure or the `:nth-child` `order` selectors will mis-target.
 
 **A section's shadow can bleed onto the NEXT section.** `.section-inner` has `z-index: 2`, which lifts a section's content (incl. any overflowing drop-shadow) ABOVE the following section's background — so the next section does NOT paint over it. A sheet's bottom-edge shadow was landing on the Fine Art seam. Fix used: `clip-path: inset(... bottom ...)` on the shadow layer to discard the shadow below the crest (parchment-on-parchment below the clip = the clip edge is invisible).
 
@@ -165,11 +165,29 @@ For a one-line change like a filename swap, a **direct GitHub edit** (pencil ico
 - **PALETTE:** Elena wanted Bubblegum Fizz `#FF58BC` as PRIMARY (replacing plum). Tested on Connect, **REVERTED** — bubblegum is a light colour, flattens titles & competes with the pink already in her art; plum stays the frame (see the `bubblegum-accent-not-primary` memory). Left `#FF58BC` + `#C45A9B` "Fuchsia Plum" documented but the UI has NO added pink.
 - **Cleanup:** unused mp4s + big source PNGs archived out of the deploy folder (Elena wants backups OUT of it). Still uncommitted/undeployed.
 
+**Done (session 7, 2026-08-04 — THE MOBILE PASS, v=90 → v=94):** Worked from Elena's own mobile screenshots + notes. All changes are `≤760px` (a couple hero bits at `≤700px`) media-query- or matchMedia-scoped, so **desktop is untouched**. Verified in a real 390px headless browser (this pane is a true viewport, NOT the old `viewportH:0` local pane — full-bleed `100vw`/`vh` render fine here).
+- **Hero → mobile STACK.** Desktop floats `.hero-content` `position:absolute` over the full-bleed sketch, which cramped the title against the drawing. Since `.hero-content` is the FIRST child (sketch comes after in the DOM), switching it back to in-flow (`position:relative`) on mobile makes the title block sit ABOVE the illustration — letters get their own space, sketch drops below. Dropped the translucent readability card, shrank `.hero-tagline` to `0.9rem`, `padding-top` clears the fixed header.
+- **Sticker sheet → BIGGER + VERTICAL.** Added a `MOBILE_POS` array in `setupStickerSheet` (same `{l,t,w,r}` meaning as `pos`) applied via `matchMedia('(max-width:760px)')` with a `change` listener → a vertical zig-zag column of larger stickers. Board height bumped to `clamp(940px,250vw,1140px)` and `.archive-header` lifted to `top:6%` on mobile so the column has room. (Render refactored to a `placeStickers()` that re-runs on breakpoint change; inline styles still win over CSS, so all sticker layout lives in JS.)
+- **Art wheel → touch-drag to spin.** It was DEAD on mobile because the only input was a `wheel` handler (touch fires no `wheel` events). Added `touchstart`/`touchmove`/(implicit end) inside the existing `!prefersReducedMotion` block: decides the gesture axis once (startX/startY), locks to spinning only if horizontal (so vertical still scrolls the page), `preventDefault`s the horizontal case, feeds `offset` at `0.55×` drag. Harmless on desktop (touch events just don't fire).
+- **Design for Learning → hide the Stellina rig on mobile.** `.edu-character { display:none }` at `≤860px` (the single-column breakpoint) — stacked, it just left a big empty gap under the two cards.
+- **Presentation → swipe "flashcard" carousel** (Elena: quizlet-style, NOT the tilted Fine-Art pile). `≤760px`: `.deck-row` becomes `display:flex; overflow-x:auto; scroll-snap-type:x mandatory`; `.deck-card` is `flex:0 0 86%; scroll-snap-align:center` → one deck per view with a ~14% peek of the next as the swipe affordance. Pure CSS, no JS. (Offered arrows/counter to match the Fine-Art deck chrome — not built unless she wants it.)
+- **Stellina scene → un-crop on mobile.** The `height:100vh` cover-crop cut the castle/campfire off on portrait. `≤760px`: `height:66vw; min-height:260px` → roughly the art's own 16:9, so the WHOLE composition shows full width (parallax `scale(1.12)` bleed stays hidden). Matches Elena's reference image.
+- **Let's Connect → smaller title + static flowers.** `.contact-title` → `clamp(3.2rem,17vw,6rem)` on mobile so "LET'S CONNECT" fits as ONE stretched line (was a giant two-line wrap). Meadow: first made STATIC on mobile (matchMedia guard in `setupContactMeadow`), then **fully removed** on mobile in the follow-up (`.contact-meadow { display:none }` ≤760px) — Elena wanted the flowers gone; they were crowding the fine-print.
+- **About → chronological story column** (Elena picked this from 3 options). See the updated masonry trap note above for the `display:contents` + `order` mechanism.
+
+**Follow-up tweaks (session 7, still 2026-08-04, v=93 → v=94), from Elena's phone review of the deployed preview:**
+- **Art wheel spacing** — paintings crowded/overlapped on a narrow screen. `RADIUS` is now `w*0.58` on `≤760px` (desktop stays `w*0.42`) and `.art-wheel-piece` shrinks to `clamp(120px,34vw,150px)` on mobile → clear gaps between the three visible pieces.
+- **Sticker sheet "thin" fix** — the mask PNG is landscape (2550×1693); `mask-size:100% 100%` squished it into the tall mobile board (narrow, thin crest). Changed to `mask-size:cover; mask-position:center top` on `≤760px` → the parchment fills the board edge-to-edge (sides cropped). Shadow follows because the drop-shadow tracks `.sheet-fill`.
+- **Contact footer** — the mahogany soil band (`.section--contact::after`) was too short, so the attribution legend spilled above it. Bumped to `clamp(155px,44vw,210px)` on mobile + `.attr-legend` capped at `40ch`; with the flowers gone it's a clean footer strip that fully contains the legend + copyright.
+- **Flowers removed on mobile** (see the Let's Connect bullet above).
+- **Still uncommitted/undeployed** — local at v=94.
+
 **Known bugs, queued:** none currently.
 
-**Next up / not built yet (in priority order, end of session 6):**
-- **MOBILE PASS — the immediate next task.** Untouched, and the site is desktop-only right now. Elena said she's been keeping notes on what's broken on mobile — ask for them. Known concerns: the new **About "brick" masonry reading order** (two columns group the DOM → chapters read 1,3,2; fix the interleave), the **hero title scale** on small screens, the **sticker sheet** (`vw` sizing + fixed board height), and the **100vh Stellina scene** (crops hard on portrait).
-- **THE DEPLOY** — still nothing live; local at **v=90**. A `git push` (real remote exists) or the manual 5-file upload. Do it right after mobile.
+**Next up / not built yet (in priority order, end of session 7):**
+- **THE DEPLOY — now the immediate next task.** Still nothing live; local at **v=94**. A `git push` (real remote exists → Vercel auto-builds) or the manual 5-file upload. Waiting on Elena's go + her phone-check of the mobile pass.
+- **Mobile pass follow-ups** (after Elena eyeballs it on her phone): confirm the **art-wheel swipe** feels right; nudge any sticker sizes/spacing, the "LET'S CONNECT" size, or carousel card width at real scale. (First phone-review round already handled: wheel spacing, sticker-sheet width, footer height, flowers removed.)
+- (Considered, not built:) arrows + a "1/3" counter on the mobile Presentation carousel to match the Fine-Art deck chrome — swipe + peek works without it; add only if Elena wants it.
 - Sticker-sheet **peel animation** (GSAP Flip) — deferred polish; sheet works great without it.
 - Stellina rig: optional whole-body breathe; head-sway pivot may want tuning.
 - Ambient rainbow-light dormant (`.ambient-light`/`.light-blob` CSS + guarded `setupAmbientLight()`), in case a jewel-palette version is reworked.
@@ -177,12 +195,12 @@ For a one-line change like a filename swap, a **direct GitHub edit** (pencil ico
 
 **Content boundary (IMPORTANT):** Elena writes **all** art and **all** copy herself — podcast scripts, educational/social-emotional text, achievement stories, section copy — and it's reviewed by education/behavioral specialists. Claude scaffolds structure/code, organizes/renames assets, and flags brand-consistency drift; use "NOTE FOR ELENA" placeholders, never generate the substance. When existing prior-Claude copy reads off (e.g. an old crossword clue), flag it — don't rewrite it.
 
-**Waiting on Elena (end of session 6):**
-- **Mobile notes** — she's been collecting them; needed for the mobile pass.
+**Waiting on Elena (end of session 7):**
+- **Phone-check the mobile pass** — especially the **art-wheel swipe-to-spin** (couldn't fully simulate a touch-drag in the test browser). (Flowers-on-mobile: resolved — removed. Wheel spacing, sticker-sheet width, footer sizing: all adjusted per her phone review.)
 - Confirm 3 draft caption sub-lines that are still Claude's: **"MECA · 2021"** (Buttons comic), **"Brand identity"** (Brainbow), and the **footer attribution legend** wording.
 - Social handles (email set: `elenamaria.parr@gmail.com`; socials pending a third-party aggregator).
-- ✅ DONE now (were pending): About bio (her revised copy, in DOM), Presentation deck copy (her words), achievement stories, hero videos (scrapped in favour of the interactive title).
-- **THE DEPLOY** — local at v=90; a `git push` or the manual 5-file upload is the only thing between here and a sendable link.
+- ✅ DONE now (were pending): mobile notes (received + acted on, session 7), About bio, Presentation deck copy, achievement stories, hero videos (scrapped).
+- **THE DEPLOY** — local at v=94; a `git push` or the manual 5-file upload is the only thing between here and a sendable link.
 
 **Bigger picture:** Elena is building a larger business (podcast w/ recorded music + products, newsletter, multi-platform video). Claude can help beyond this site — copy, launch/marketing planning, landing pages, asset organization — but that's a **separate project → separate chat/folder**. Not art or podcast/educational writing (hers).
 
@@ -191,5 +209,5 @@ For a one-line change like a filename swap, a **direct GitHub edit** (pencil ico
 - Hero eyebrow line (Portland, Maine + email) above "Hi, I'm Elena," in the style of spencergabor.work — discussed, not built
 
 **Unpolished but functional:**
-- **Mobile layouts** — the sticker sheet uses `vw`-based sizing + a fixed board height that will need a portrait pass; the 100vh Stellina scene crops hard on portrait. (Sticker positions are `%`-based so they scale, but the whole section wants a mobile review.)
+- **Mobile layouts** — first full pass done (session 7); pending Elena's phone-check + any nudges to sticker sizes/spacing, the Connect title size, and the carousel card width at real scale.
 - Spacing token cleanup — some additions (incl. sticker-sheet gradient stops) use raw values instead of `--sp-*`

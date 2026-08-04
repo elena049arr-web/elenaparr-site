@@ -975,6 +975,14 @@ p { margin: 0 0 var(--sp-2); }
 @media (max-width: 760px) {
   .section--achievements .the-archive { height: clamp(940px, 250vw, 1140px); }
   .section--achievements .archive-header { top: 6%; }
+  /* The mask PNG is landscape (2550×1693); forcing it to 100%×100% of the tall mobile board
+     squished the sheet narrow + thin (Elena). `cover` scales it to fill the width and crops
+     the overflow instead — so the parchment fills the board edge-to-edge. The shadow layer
+     follows because the drop-shadow tracks .sheet-fill's masked shape. */
+  .section--achievements .sheet-fill {
+    -webkit-mask-size: cover; mask-size: cover;
+    -webkit-mask-position: center top; mask-position: center top;
+  }
 }
 
 .the-archive-body {
@@ -1465,6 +1473,11 @@ p { margin: 0 0 var(--sp-2); }
   .art-wheel { overflow-x: auto; height: auto; padding: var(--sp-4) 0; }
   .art-wheel-track { position: static; display: flex; gap: var(--sp-3); width: max-content; }
   .art-wheel-piece { position: static; margin: 0 !important; transform: none !important; opacity: 1 !important; width: 200px; }
+}
+/* Mobile: smaller pieces + a wider radius (set in JS) so the paintings sit apart, not
+   overlapping, on a narrow screen (Elena, session 7). */
+@media (max-width: 760px) {
+  .art-wheel-piece { width: clamp(120px, 34vw, 150px); }
 }
 
 /* =========================================================
@@ -2049,6 +2062,14 @@ p { margin: 0 0 var(--sp-2); }
   /* Smaller on mobile so it reads as a proportioned pair of stretched words (like the
      desktop) instead of two oversized lines crowding the screen (Elena's note). */
   .contact-title { font-size: clamp(3.2rem, 17vw, 6rem); line-height: 0.9; }
+  /* Drop the flower meadow on mobile entirely (Elena, session 7): with no cursor it can't be
+     interactive, and it was crowding the fine-print. */
+  .contact-meadow { display: none; }
+  /* Taller mahogany "soil" footer so the attribution legend + credit fit fully inside it
+     (they were spilling above the band). No flowers now, so it's a clean footer strip. */
+  .section--contact::after { height: clamp(155px, 44vw, 210px); }
+  .contact-footer-legal { bottom: var(--sp-3); }
+  .attr-legend { max-width: 40ch; }
 }
 
 /* =========================================================
