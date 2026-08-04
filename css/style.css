@@ -501,10 +501,10 @@ p { margin: 0 0 var(--sp-2); }
 .book-row {
   list-style: none; margin: var(--sp-4) 0 0; padding: 0;
   display: grid; grid-template-columns: repeat(2, auto); /* two covers, sized to content */
-  justify-content: center;                                /* clustered + centered, not spread */
+  justify-content: start;                                 /* flanked left, aligned with the intro copy */
   gap: clamp(var(--sp-8), 8vw, var(--sp-16)); align-items: end;
 }
-.book { text-align: center; }
+.book { text-align: left; }
 .book-frame {
   position: relative; display: inline-block; margin: 0 0 var(--sp-4);
   max-width: 100%;
@@ -545,9 +545,31 @@ p { margin: 0 0 var(--sp-2); }
   font-family: var(--font-body); font-size: 1.05rem; line-height: 1.6;
   color: #EFE6EC; margin: 0;
 }
+/* About layout (2026-08-03): books left-flanked, overview copy in a right column
+   to balance the left-weighted imagery. Pro working photos will join the left
+   column later. Stacks to a single column on mobile. */
+.about-layout {
+  display: grid;
+  grid-template-columns: auto minmax(240px, 34ch);
+  align-items: start;           /* overview top-aligns with the book covers */
+  gap: clamp(var(--sp-6), 6vw, var(--sp-12));
+  margin-top: var(--sp-4);
+}
+.about-layout .pub-overview { margin-top: 0; max-width: none; }  /* it's a column now, not a block below */
+@media (max-width: 860px) {
+  .about-layout { grid-template-columns: 1fr; gap: var(--sp-8); }
+  .about-layout .pub-overview { margin-top: var(--sp-4); }
+}
 
 /* ---- Achievements: now its own warm-white section (split from Publications) ---- */
-.section--achievements { background: var(--color-bg); }
+.section--achievements {
+  /* warm white at the top (behind the sheet's crest), fading to the Fine Art parchment
+     lower down so the parchment sheet connects into Fine Art with no warm-white gap */
+  background: linear-gradient(to bottom,
+    var(--color-bg) 0%, var(--color-bg) 20%,
+    var(--color-bg-alt) 46%, var(--color-bg-alt) 100%);
+  padding-bottom: 0; /* board bottom butts directly against the Fine Art section */
+}
 .section--achievements .the-archive { margin-top: 0; } /* section padding provides the spacing now */
 .the-archive-title { color: var(--color-plum); }
 .the-archive-intro { color: var(--color-plum-mauve); }
@@ -613,10 +635,8 @@ p { margin: 0 0 var(--sp-2); }
    without scrolling, per the mockup — the global section padding/heading
    spacing is too generous for that here specifically, so it's tightened
    just for this section rather than changed everywhere. */
-.section--publications {
-  padding-top: var(--sp-6);
-  padding-bottom: var(--sp-8);
-}
+/* About padding normalised to the standard .section 128/128 rhythm 2026-08-03
+   (was sp-6/sp-8 = 48/64 — out of step with every other section). */
 .section--publications .section-title { margin-bottom: var(--sp-1); }
 .section--publications .section-intro { margin-bottom: var(--sp-4); }
 
@@ -746,6 +766,83 @@ p { margin: 0 0 var(--sp-2); }
 .the-archive-intro {
   color: var(--color-plum-mauve); /* scheme C body colour (was ink-soft) */
   margin-bottom: var(--sp-6);
+}
+
+/* ===== Sticker sheet — scattered "sheet" per Elena's Canva mockup (2026-08-03).
+   Her cream-board asset is the backdrop (crest at top holds the title); stickers
+   are absolutely scattered at varied size + rotation (positions set inline by JS).
+   Labels are dropped (the mockup has none; aria-labels still carry meaning).
+   NOTE: the board is cream on a warm-white section — a soft drop-shadow gives its
+   edge just enough contrast to read (see the "needs backdrop to contrast" filename).
+   Desktop scatter only; mobile is a separate pass (deferred to 2026-08-04). ===== */
+.section--achievements .the-archive {
+  position: relative;
+  /* full-bleed: the cream board spans the whole section so it reads as the surface,
+     not a floating card. 100vw is safe here — html/#main have overflow-x:hidden. */
+  width: 100vw; margin-left: 50%; transform: translateX(-50%);
+  max-width: none; padding: 0;
+  height: clamp(540px, 47vw, 760px);  /* taller — room for the words→stickers gap + bigger stickers (Elena) */
+}
+/* The parchment board is a BEHIND-content layer (::before), not the container itself —
+   a mask on the container would clip the title & stickers. The PNG supplies only the
+   shape; fill is the Fine Art parchment; its bottom flows into Fine Art with no gap. */
+/* OUTER: carries the drop-shadow ONLY. Not masked, so the shadow renders freely
+   around the sheet shape (a mask here would clip the shadow away — the old bug). */
+.section--achievements .sheet-shadow {
+  position: absolute; inset: 0; z-index: 0;
+  filter: drop-shadow(0 6px 6px rgba(66, 17, 6, 0.55)) drop-shadow(0 13px 22px rgba(66, 17, 6, 0.30));
+  /* clip the shadow layer to the TOP half: keeps the crest shadow, discards the
+     sheet's bottom-edge shadow so it never lands on the Fine Art seam. The sheet is
+     parchment on parchment below the clip, so the clip edge is invisible. */
+  clip-path: inset(-40% 0 48% 0);
+}
+/* INNER: the solid parchment sheet. No bottom fade now — so the only shadow-casting
+   edge in view is the top crest (→ crest shadow, no mid-section bar). The sheet's
+   bottom sits at the section edge; its downward shadow overflows into Fine Art and
+   is painted over by Fine Art's opaque parchment, keeping that seam seamless. */
+.section--achievements .sheet-fill {
+  position: absolute; inset: 0;
+  background: var(--color-bg-alt);
+  -webkit-mask: url("../assets/images/sticker_sheet_needs_backdrop_to_contrast_cream.png") center top / 100% 100% no-repeat;
+          mask: url("../assets/images/sticker_sheet_needs_backdrop_to_contrast_cream.png") center top / 100% 100% no-repeat;
+}
+/* title + intro grouped as one neat block, seated in the crest (no visible box) */
+.section--achievements .archive-header {
+  position: absolute; top: 19%; left: 50%; transform: translateX(-50%);
+  width: 100%; text-align: center; z-index: 3;
+}
+.section--achievements .the-archive-title {
+  position: static; margin: 0; line-height: 1;
+}
+.section--achievements .the-archive-intro {
+  position: static; margin: var(--sp-3) auto 0; max-width: 40ch;
+}
+.sticker-sheet {
+  position: absolute; inset: 0; margin: 0; padding: 0;
+  list-style: none; max-width: none; background: none; border-radius: 0;
+  display: block; z-index: 1;   /* above the board ::before layer */
+}
+/* each sticker: left/top = its centre, width = % of the board — all set inline by JS */
+.sticker {
+  position: absolute;
+  transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+}
+.sticker-btn {
+  background: none; border: none; padding: 0; cursor: pointer;
+  display: block; width: 100%;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.sticker-btn:hover, .sticker-btn:focus-visible {
+  transform: translateY(-6px) scale(1.06);   /* peel-hint lift (on the btn, so it composes with the li's rotate) */
+  outline: none;
+}
+.sticker-btn img {
+  display: block; width: 100%; height: auto;
+  filter: drop-shadow(0 8px 12px rgba(30, 8, 20, 0.30));
+}
+.sticker-label { display: none; }   /* mockup has no visible labels; aria-label carries meaning */
+@media (prefers-reduced-motion: reduce) {
+  .sticker-btn, .sticker-btn:hover, .sticker-btn:focus-visible { transform: none; }
 }
 
 .the-archive-body {
@@ -936,7 +1033,7 @@ p { margin: 0 0 var(--sp-2); }
   align-items: center;
   justify-content: center;
   padding: var(--sp-4);
-  background: rgba(46, 42, 36, 0.55);
+  background: rgba(118, 57, 93, 0.55); /* plum-lilac backdrop (was a dark scrim) — 2026-08-03 */
   backdrop-filter: blur(4px);
   opacity: 0;
   pointer-events: none;
@@ -950,15 +1047,32 @@ p { margin: 0 0 var(--sp-2); }
   position: relative;
   background: var(--color-bg);
   border-radius: var(--radius-card);
-  max-width: 560px;
+  max-width: 460px;
   width: 100%;
-  max-height: 85vh;
-  overflow-y: auto;
-  padding: var(--sp-8) var(--sp-6) var(--sp-6);
-  text-align: left;
+  overflow: visible;              /* let the pinned sticker overhang the top edge */
+  margin-top: 88px;               /* leaves room above for the (now larger) overhang */
   box-shadow: var(--shadow-lift);
   transform: scale(0.9);
   transition: transform var(--dur-med) var(--ease-out);
+}
+/* the clicked sticker, "pinned" straddling the top edge of the card */
+.achievement-sticker {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translate(-50%, -60%);
+  z-index: 2;
+  pointer-events: none;
+}
+.achievement-sticker img {
+  display: block; width: auto; height: auto;
+  max-height: 200px; max-width: 260px;
+  filter: drop-shadow(0 10px 16px rgba(30, 8, 20, 0.38));
+}
+.achievement-scroll {
+  max-height: 74vh;
+  overflow-y: auto;
+  padding: 104px var(--sp-6) var(--sp-6); /* top padding clears the larger sticker's lower half */
+  text-align: center;
 }
 .achievement-overlay.is-open .achievement-panel {
   transform: scale(1);
@@ -991,21 +1105,41 @@ p { margin: 0 0 var(--sp-2); }
   font-family: var(--font-display);
   text-transform: uppercase;
   font-size: 2rem;
+  color: var(--color-plum);
   margin-bottom: var(--sp-3);
 }
 .achievement-image {
-  width: 100%;
-  aspect-ratio: 16/10;
-  border-radius: var(--radius-art);
+  max-width: 220px;
+  margin: 0 auto var(--sp-4);
+  border-radius: 14px;
   overflow: hidden;
-  margin-bottom: var(--sp-3);
-  background: var(--color-bg-alt);
 }
-.achievement-image img { width: 100%; height: 100%; object-fit: cover; }
+.achievement-image img { width: 100%; height: auto; display: block; object-fit: contain; }
 .achievement-body {
   color: var(--color-ink-soft);
   line-height: 1.6;
+  text-align: left;
 }
+/* "learn more" button inside the popup (for the blurbs that ended in "…") */
+.achievement-link {
+  display: inline-block;
+  margin-top: var(--sp-5);
+  padding: 0.7em 1.5em;
+  background: var(--color-plum);
+  color: #FBFAF7;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border-radius: 999px;
+  transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.achievement-link:hover,
+.achievement-link:focus-visible {
+  background: var(--color-plum-dark);
+  transform: translateY(-2px);
+}
+.achievement-link[hidden] { display: none; }  /* the hidden attr must win over display:inline-block */
 
 /* =========================================================
    FINE ART — stationary film-reel frame + continuously
@@ -1224,6 +1358,74 @@ p { margin: 0 0 var(--sp-2); }
 }
 .edu-evidence-grid img { border-radius: var(--radius-art); box-shadow: var(--shadow-soft); }
 
+/* ===== Design for Learning — two equal labeled cards (Kids Art + Social Story) + the
+   Stellina character, on a soft pink-lilac panel (Elena's mockup composition, 2026-08-04). ===== */
+.section--edu .section-inner { max-width: 1340px; }   /* let the panel space further across the page (Elena) */
+.edu-panel {
+  margin-top: var(--sp-8);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.92fr);
+  align-items: start;
+  gap: clamp(var(--sp-5), 3vw, var(--sp-9));
+  background: #F3E7EF;
+  border-radius: var(--radius-art);
+  padding: clamp(var(--sp-7), 4vw, var(--sp-12));   /* generous breathing room off the panel edges (Elena) */
+}
+/* footnote-star used to flag work that isn't Elena's original illustration */
+.attr-mark { color: var(--color-copper); font-size: 0.62em; font-weight: 700; vertical-align: super; margin-left: 0.2em; cursor: help; }
+/* the two cards */
+.edu-card2 { display: flex; flex-direction: column; margin: 0; }
+.edu-card2-media {
+  margin: 0; position: relative; overflow: hidden;
+  border-radius: var(--radius-art);
+  height: clamp(280px, 30vw, 440px);
+  box-shadow: var(--shadow-soft); background: #fff;
+}
+.edu-card2-media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.edu-card2-title { font-family: var(--font-body); font-weight: 700; color: var(--color-plum); margin: var(--sp-3) 0 var(--sp-1); }
+.edu-card2-copy p { font-family: var(--font-body); font-size: 0.9rem; line-height: 1.55; color: var(--color-plum-mauve); margin: 0 0 var(--sp-2); }
+.edu-card2-copy p:last-child { margin-bottom: 0; }
+
+/* the "velt" — the Social Story card's media: pages scroll VERTICALLY within the card,
+   numbered in reading order. setupStoryBelt duplicates #storyBelt for a seamless loop. */
+.story-belt {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
+}
+.story-belt-track { display: flex; flex-direction: column; gap: var(--sp-3); margin: 0; padding: 0; list-style: none; animation: beltScroll 50s linear infinite; }
+.story-belt:hover .story-belt-track { animation-play-state: paused; }
+.story-page { position: relative; flex: 0 0 auto; width: 100%; }
+.story-page img { display: block; width: 100%; height: auto; border-radius: 10px; box-shadow: var(--shadow-soft); }
+.story-page-num {
+  position: absolute; top: 10px; left: 10px; width: 28px; height: 28px; border-radius: 50%; z-index: 1;
+  display: grid; place-items: center; background: var(--color-plum); color: #FBFAF7;
+  font-family: var(--font-body); font-weight: 700; font-size: 0.85rem;
+}
+@keyframes beltScroll { to { transform: translateY(-50%); } }
+
+/* RIGHT — the layered Stellina rig (7 same-canvas PNGs; classes are `rig-*`, NOT `stel-*`,
+   because the Stellina SCENE owns `.stel-layer`). Calm idle: head sways; the OPEN eyes/mouth
+   (`.rig-active`) fade OUT while the CLOSED ones (`.rig-rest`) fade in → clean blink + neutral. */
+.edu-character { display: flex; justify-content: center; align-self: end; }   /* sits low on the panel (Elena) */
+.stellina-rig { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1214 / 1933; }   /* larger (Elena) */
+.rig-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.rig-head { position: absolute; inset: 0; transform-origin: 50% 35%; animation: stelSway 6.5s ease-in-out infinite; }
+.rig-brows { animation: stelBrows 6.5s ease-in-out infinite; }
+.rig-active { animation: stelActive 6.5s ease-in-out infinite; }   /* eyes-open + mouth-open */
+.rig-rest { opacity: 0; animation: stelRest 6.5s ease-in-out infinite; }   /* eyes-closed + mouth-closed */
+@keyframes stelSway   { 0%, 100% { transform: rotate(-1.3deg); } 50% { transform: rotate(1.3deg); } }
+@keyframes stelBrows  { 0%, 62%, 100% { transform: translateY(0); } 78%, 88% { transform: translateY(1.1%); } }
+@keyframes stelActive { 0%, 68% { opacity: 1; } 78%, 88% { opacity: 0; } 98%, 100% { opacity: 1; } }
+@keyframes stelRest   { 0%, 68% { opacity: 0; } 78%, 88% { opacity: 1; } 98%, 100% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .story-belt-track { animation: none; }
+  .story-belt { overflow-y: auto; }
+  .rig-head, .rig-brows, .rig-active, .rig-rest { animation: none; }
+  .rig-active { opacity: 1; } .rig-rest { opacity: 0; }   /* rest at eyes-open + happy mouth */
+}
+@media (max-width: 860px) { .edu-panel { grid-template-columns: 1fr; } }
+
 /* =========================================================
    BRANDING
    ========================================================= */
@@ -1368,7 +1570,13 @@ p { margin: 0 0 var(--sp-2); }
 .deck-name {
   font-family: var(--font-body); font-weight: 600;
   color: var(--color-ink);
-  padding: var(--sp-2) var(--sp-3);
+  padding: var(--sp-3) var(--sp-3) var(--sp-1);
+  margin: 0;
+}
+.deck-blurb {
+  font-family: var(--font-body); font-size: 0.9rem; line-height: 1.5;
+  color: var(--color-plum-mauve);
+  padding: 0 var(--sp-3) var(--sp-3);
   margin: 0;
 }
 
@@ -1564,15 +1772,26 @@ p { margin: 0 0 var(--sp-2); }
   pointer-events: none; /* reacts to the cursor but never blocks clicks */
 }
 /* footer credit, merged into this section so the section reaches the page base */
-.contact-credit {
+/* footer legal block (attribution legend + copyright) in the soil band */
+.contact-footer-legal {
   position: absolute;
   bottom: var(--sp-2);
   left: 0; right: 0;
+  z-index: 3; /* above the flowers so it stays readable */
+  text-align: center;
+  padding: 0 var(--sp-4);
+}
+.attr-legend {
+  max-width: 68ch; margin: 0 auto var(--sp-1);
+  color: rgba(250, 245, 236, 0.62);
+  font-size: 0.72rem; line-height: 1.5;
+}
+.attr-legend .attr-mark { color: var(--color-lilac); font-size: 1em; vertical-align: baseline; margin: 0 0.15em 0 0; }
+.contact-credit {
   margin: 0;
   text-align: center;
   color: rgba(250, 245, 236, 0.6);
   font-size: 0.8rem;
-  z-index: 3; /* above the flowers so it stays readable */
 }
 .meadow-blade {
   position: absolute;

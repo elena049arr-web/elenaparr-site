@@ -170,6 +170,15 @@ if ('IntersectionObserver' in window) {
   track.innerHTML += track.innerHTML; // 2 identical halves → CSS scroll -50% loops seamlessly
 })();
 
+/* ---------- Design for Learning: social-story "belt" — duplicate the 3 numbered pages
+   once so the CSS translateX(-50%) auto-scroll loops seamlessly. Skipped under reduced
+   motion (CSS then lets the belt scroll manually). ---------- */
+(function setupStoryBelt() {
+  const track = document.getElementById('storyBelt');
+  if (!track || prefersReducedMotion) return;
+  track.innerHTML += track.innerHTML;
+})();
+
 /* Fit-to-width section titles were tried 2026-08-03 (Elena's "B") and reverted —
    she preferred the smaller uniform size. Titles now use the CSS clamp on
    .section-title (~115px cap). */
@@ -531,6 +540,125 @@ if (window.gsap && !prefersReducedMotion) {
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeAchievement(); });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeAchievement();
+  });
+})();
+
+/* ---------- Achievements sticker sheet (2026-08-03) — replaces the crossword.
+   Each sticker opens the achievement popup with that sticker "pinned" to the top
+   of the story card. Owns the popup open/close wiring (setupCrossword is inert now).
+   NOTE FOR ELENA: bodies are yours to finalize — placeholders/notes carried over,
+   with FOUNDER corrected to Stellina and CREATE folded into the Pitch entry. ---------- */
+(function setupStickerSheet() {
+  const sheet = document.getElementById('stickerSheet');
+  if (!sheet) return;
+
+  // pos = scatter placement on the cream board: l/t are the sticker's CENTRE (% of
+  // board), w = width (% of board), r = rotation (deg). Derived from Elena's mockup;
+  // easy to nudge. The Pitch bear isn't in the mockup — placed lower-right to balance.
+  const STICKERS = [
+    { sticker: 'founder_sticker.png', label: 'Founder', pos: { l: 31, t: 80, w: 21, r: -3 },
+      ach: { title: "Founder — Stellina Mae", image: null,
+        body: "In 2025, I began working on a huge immersive project to release podcasts and music, and to design an animated interactive site.",
+        link: { label: "Learn more", href: "#stellina" } } },
+    { sticker: 'art_sticker.png', label: 'Published Books', pos: { l: 80, t: 55, w: 15, r: 5 },
+      ach: { title: "Published Children's Books", image: null,
+        body: "In 2019, I got my first opportunity at 15 to illustrate a children's book that was advised and written in conjunction with Dr. Avery to educate on children's health regarding a lesser-known mental health condition spurred on by ticks and mold." } },
+    { sticker: 'pitch_sticker.png', label: 'Pitch Competition', pos: { l: 71, t: 81, w: 16, r: -4 },
+      ach: { title: "C.R.E.A.T.E Pitch — Top 10", image: null,
+        body: "In 2024, I participated in the C.R.E.A.T.E pitch competition and came in the top 10. I pitched 'Brainbow', an interactive site for parents and kids with autism to guide them towards state resources, tools, and community." } },
+    { sticker: 'nonfiction_award_sticker.png', label: 'Nonfiction Award', pos: { l: 60, t: 57, w: 21, r: -12 },
+      ach: { title: "Youth Non-Fiction Award", image: null,
+        body: "In 2019, I won the Youth Non-Fiction Award, one of the categories of the Maine Literary Awards, put on by the Maine Writers and Publishers Alliance." } },
+    { sticker: 'teacher_sticker.png', label: 'Design for Learning', pos: { l: 40, t: 54, w: 18, r: -5 },
+      ach: { title: "Co-Lead Teacher, Goldman Family Preschool", image: null,
+        body: "In 2022, I became a floater for a few months before accepting a job as co-lead teacher at the Goldman Family Preschool, a Reggio Emilia-designed program.",
+        link: { label: "Learn more", href: "#design-learning" } } },  // → Design for Learning section (confirmed)
+    { sticker: 'ai_comp_sticker.png', label: 'AI Competition', pos: { l: 51, t: 83, w: 14, r: 3 },
+      ach: { title: "A.I. Innovation & Sustainability Pitch", image: null,
+        body: "In 2026, I participated in an A.I. innovation and sustainability pitch competition with only a three-day turnaround to make a presentation and pitch for a panel of USM judges.",
+        link: { label: "See the presentation", href: "#branding" } } },  // → the USM AI deck lives in the Presentation section (#branding, being relabeled)
+    { sticker: 'arrive_allive_sticker.png', label: 'Arrive Alive', pos: { l: 18, t: 59, w: 12, r: -6 },
+      ach: { title: "Arrive Alive Award — First Place", image: null,
+        body: "In 2022, I won first place in the Arrive Alive award in the painting category, put on annually by the law offices of Joe Bornstein for the state of Maine." } },
+  ];
+
+  // --- render the stickers ---
+  STICKERS.forEach((s, i) => {
+    const li = document.createElement('li');
+    li.className = 'sticker';
+    const p = s.pos || { l: 50, t: 50, w: 16, r: 0 };
+    li.style.left = p.l + '%';
+    li.style.top = p.t + '%';
+    li.style.width = p.w + '%';
+    li.style.setProperty('--rot', (p.r || 0) + 'deg');
+    const btn = document.createElement('button');
+    btn.className = 'sticker-btn';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', `${s.label} — open story`);
+    btn.innerHTML = `<img src="assets/images/${s.sticker}" alt="" loading="lazy">`;
+    btn.addEventListener('click', () => openAchievement(s));
+    const label = document.createElement('span');
+    label.className = 'sticker-label';
+    label.textContent = s.label;
+    li.append(btn, label);
+    sheet.appendChild(li);
+  });
+
+  // --- popup wiring (same #achievementOverlay DOM; sticker pinned to the card) ---
+  const overlay = document.getElementById('achievementOverlay');
+  const stickerEl = document.getElementById('achievementSticker');
+  const titleEl = document.getElementById('achievementTitle');
+  const imageEl = document.getElementById('achievementImage');
+  const bodyEl = document.getElementById('achievementBody');
+  const closeBtn = document.getElementById('achievementClose');
+  const linkEl = document.getElementById('achievementLink');
+  const scrollEl = overlay.querySelector('.achievement-scroll');
+  let lastFocused = null;
+
+  function openAchievement(s) {
+    lastFocused = document.activeElement;
+    stickerEl.innerHTML = `<img src="assets/images/${s.sticker}" alt="">`;
+    titleEl.textContent = s.ach.title;
+    imageEl.innerHTML = s.ach.image ? `<img src="${s.ach.image}" alt="">` : '';
+    imageEl.style.display = s.ach.image ? '' : 'none';
+    bodyEl.textContent = s.ach.body;
+    // optional "learn more" button (the blurbs that ended in "…")
+    const lk = s.ach.link;
+    if (lk) {
+      linkEl.textContent = lk.label;
+      linkEl.href = lk.href;
+      const external = !lk.href.startsWith('#');
+      if (external) { linkEl.target = '_blank'; linkEl.rel = 'noopener noreferrer'; }
+      else { linkEl.removeAttribute('target'); linkEl.removeAttribute('rel'); }
+      linkEl.hidden = false;
+    } else {
+      linkEl.hidden = true;
+    }
+    if (scrollEl) scrollEl.scrollTop = 0;
+    overlay.style.top = `${window.scrollY}px`; // align with the viewport (body is GSAP-transformed; can't use position:fixed)
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    closeBtn.focus({ preventScroll: true });
+  }
+  function closeAchievement() {
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+    if (lastFocused) lastFocused.focus({ preventScroll: true });
+  }
+  closeBtn.addEventListener('click', closeAchievement);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeAchievement(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeAchievement();
+  });
+  // "learn more" — internal #section links close the popup and smooth-scroll; external links open normally
+  linkEl.addEventListener('click', (e) => {
+    const href = linkEl.getAttribute('href') || '';
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      closeAchievement();
+      const target = document.querySelector(href);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    }
   });
 })();
 

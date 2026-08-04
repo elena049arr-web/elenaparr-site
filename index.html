@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=34">
+<link rel="stylesheet" href="css/style.css?v=64">
 </head>
 <body>
 
@@ -22,10 +22,10 @@
       <span></span><span></span><span></span>
     </button>
     <nav class="primary-nav" id="primaryNav">
-      <a href="#publications">Publications</a>
+      <a href="#publications">About</a>
       <a href="#fine-art">Fine Art</a>
       <a href="#design-learning">Design for Learning</a>
-      <a href="#branding">Branding</a>
+      <a href="#branding">Presentation</a>
       <a href="#stellina">Stellina Mae</a>
       <a href="#contact" class="nav-cta">Let's Connect</a>
     </nav>
@@ -55,10 +55,14 @@
 <div class="achievement-overlay" id="achievementOverlay" aria-hidden="true">
   <div class="achievement-panel" role="dialog" aria-modal="true" aria-labelledby="achievementTitle">
     <button class="achievement-close" id="achievementClose" aria-label="Close">&times;</button>
-    <p class="achievement-eyebrow" id="achievementEyebrow">Unlocked</p>
-    <h3 class="achievement-title" id="achievementTitle"></h3>
-    <div class="achievement-image" id="achievementImage"></div>
-    <p class="achievement-body" id="achievementBody"></p>
+    <!-- the clicked sticker, "pinned" overhanging the top edge of the card -->
+    <div class="achievement-sticker" id="achievementSticker" aria-hidden="true"></div>
+    <div class="achievement-scroll">
+      <h3 class="achievement-title" id="achievementTitle"></h3>
+      <div class="achievement-image" id="achievementImage"></div>
+      <p class="achievement-body" id="achievementBody"></p>
+      <a class="achievement-link" id="achievementLink" hidden></a>
+    </div>
   </div>
 </div>
 
@@ -96,32 +100,40 @@
   <!-- ================= PUBLICATIONS ================= -->
   <section class="section section--publications" id="publications">
     <div class="section-inner">
-      <p class="eyebrow">01 — Publications</p>
-      <h2 class="section-title">Publications</h2>
+      <p class="eyebrow">01 — About</p>
+      <h2 class="section-title">About</h2>
       <p class="section-intro">
         My work in creative freelance projects began at fifteen — leading to my first two published books as an illustrator.
       </p>
 
-      <!-- 2-up: the two front covers (back cover dropped 2026-08-03 — it out-featured
-           the fronts, and the intro says "two books"). Trimmed transparent-bg PNGs on
-           the plum; lilac offset card + drop-shadow are CSS. NOTE FOR ELENA: captions
-           are factual placeholders — refine as you like. -->
-      <ul class="book-row">
-        <li class="book">
-          <figure class="book-frame"><img src="assets/images/pub-pans-front.png" alt="My Story About Pans/Pandas front cover, illustrated by Elena Parr" loading="lazy"></figure>
-          <p class="book-title">My Story About Pans/Pandas</p>
-          <p class="book-year">Published 2019</p>
-        </li>
-        <li class="book">
-          <figure class="book-frame"><img src="assets/images/pub-ivory.png" alt="Ivory Butterflies cover, illustrated by Elena Parr" loading="lazy"></figure>
-          <p class="book-title">Ivory Butterflies</p>
-          <p class="book-year">Published 2021</p>
-        </li>
-      </ul>
+      <!-- About = intro section for now; the two published books live here as a
+           supporting beat. Publications graduates to its own section later when
+           there's the volume. Left column = books today, professional working
+           photos to join them later; right column = overview copy (balances the
+           left-flanked imagery). Renamed from "Publications" 2026-08-03. -->
+      <div class="about-layout">
+        <!-- 2-up: the two front covers (back cover dropped 2026-08-03 — it out-featured
+             the fronts, and the intro says "two books"). Trimmed transparent-bg PNGs on
+             the plum; lilac offset card + drop-shadow are CSS. NOTE FOR ELENA: captions
+             are factual placeholders — refine as you like. Pro working photos to be
+             added to this left column later. -->
+        <ul class="book-row">
+          <li class="book">
+            <figure class="book-frame"><img src="assets/images/pub-pans-front.png" alt="My Story About Pans/Pandas front cover, illustrated by Elena Parr" loading="lazy"></figure>
+            <p class="book-title">My Story About Pans/Pandas</p>
+            <p class="book-year">Published 2019</p>
+          </li>
+          <li class="book">
+            <figure class="book-frame"><img src="assets/images/pub-ivory.png" alt="Ivory Butterflies cover, illustrated by Elena Parr" loading="lazy"></figure>
+            <p class="book-title">Ivory Butterflies</p>
+            <p class="book-year">Published 2021</p>
+          </li>
+        </ul>
 
-      <div class="pub-overview">
-        <h3 class="pub-overview-title">Overview</h3>
-        <p class="pub-overview-text"><!-- NOTE FOR ELENA: your overview copy — a few sentences on the books, your illustration role, and the stories behind them. Placeholder below, replace it. -->A short overview of these publications goes here — what each book is, your role as illustrator, and the story behind the work. <em>(placeholder — replace with your copy)</em></p>
+        <div class="pub-overview">
+          <h3 class="pub-overview-title">Overview</h3>
+          <p class="pub-overview-text"><!-- NOTE FOR ELENA: your About/overview copy — who you are, your illustration role, and the stories behind the books. Placeholder below, replace it. -->A short overview goes here — who you are as an illustrator, your role on these books, and the story behind the work. <em>(placeholder — replace with your copy)</em></p>
+        </div>
       </div>
     </div>
   </section>
@@ -133,23 +145,20 @@
   <section class="section section--achievements" id="achievements">
     <div class="section-inner">
       <div class="the-archive" id="theArchive">
-        <h3 class="the-archive-title">Achievements</h3>
-        <p class="the-archive-intro">Seven words. Seven stories.</p>
-
-        <div class="the-archive-body">
-          <div class="crossword-puzzle" id="crosswordPuzzle" aria-label="Interactive crossword. Type letters to solve each word and unlock its story."></div>
-
-          <div class="crossword-clues">
-            <div class="crossword-clues-col">
-              <p class="crossword-clues-heading">Across</p>
-              <ol class="crossword-clues-list" id="cluesAcross"></ol>
-            </div>
-            <div class="crossword-clues-col">
-              <p class="crossword-clues-heading">Down</p>
-              <ol class="crossword-clues-list" id="cluesDown"></ol>
-            </div>
-          </div>
+        <!-- parchment sheet backdrop: shadow on the OUTER div (unmasked, so it renders),
+             mask on the INNER div. Splitting them dodges the mask-clips-drop-shadow trap. -->
+        <div class="sheet-shadow" aria-hidden="true"><div class="sheet-fill"></div></div>
+        <div class="archive-header">
+          <h3 class="the-archive-title">Achievements</h3>
+          <p class="the-archive-intro"><!-- NOTE FOR ELENA: the old crossword line "Seven words. Seven stories." is retired — write your own sticker-sheet line. Placeholder below. -->Tap a sticker to pin up its story.</p>
         </div>
+
+        <!-- Sticker sheet (replaces the crossword 2026-08-03). Stickers are injected by
+             setupStickerSheet in main.js; clicking one opens the achievement popup with
+             that sticker "pinned" to the top of the story card. The old crossword markup
+             (crosswordPuzzle / crossword-clues) was removed — setupCrossword() is now
+             inert (guarded on the missing #crosswordPuzzle); its CSS is dead but kept. -->
+        <ul class="sticker-sheet" id="stickerSheet" aria-label="Achievement stickers — tap one to open its story"></ul>
       </div>
     </div>
   </section>
@@ -203,28 +212,55 @@
         Design can teach, comfort, and spark curiosity. My classroom projects combine visual storytelling with creative learning experiences, helping children explore emotions, communication, and imagination through art and play.
       </p>
 
-      <div class="edu-grid">
-        <div class="edu-feature">
-          <img src="assets/images/decor-bear.webp" alt="Illustrated rainbow teddy bear in a meadow" loading="lazy">
-        </div>
-        <article class="edu-card">
-          <img src="assets/images/edu-social-story-3.webp" alt="Listening and Learning at School, book illustrated by Elena Parr" loading="lazy">
-          <h3>Listening and Learning at School</h3>
-          <p>Written by Jacqui Chait, illustrated by Elena Parr.</p>
-        </article>
-        <article class="edu-card">
-          <img src="assets/images/edu-stop-look-listen.webp" alt="Stop, Look, Listen social story spread" loading="lazy">
-          <h3>Stop · Look · Listen</h3>
-          <p><!-- NOTE: add project context --> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </article>
-      </div>
+      <!-- Rebuilt to Elena's mockup composition 2026-08-04: two equal labeled cards
+           (Kids Art + Social Story) side by side + the Stellina character on the right. -->
+      <div class="edu-panel">
 
-      <div class="edu-evidence">
-        <p class="edu-evidence-label">From the classroom</p>
-        <div class="edu-evidence-grid">
-          <img src="assets/images/edu-kidsart-1.webp" alt="Children's classroom artwork" loading="lazy">
-          <img src="assets/images/edu-kidsart-2.webp" alt="Children's classroom artwork" loading="lazy">
+        <!-- CARD 1 — Kids Art from Activity (the emotion piece + Elena's blurbs) -->
+        <article class="edu-card2">
+          <figure class="edu-card2-media">
+            <img src="assets/images/edu-kidsart-1.webp" alt="Children's emotion-exploration painting from the preschool art show" loading="lazy">
+          </figure>
+          <h3 class="edu-card2-title">Kids Art From Activity <sup class="attr-mark" title="Children's own artwork — not my illustration. See note below.">★</sup></h3>
+          <div class="edu-card2-copy">
+            <p>The emotion piece activity was led for a preschool art show, where children were asked to let an emotion exploration guide their color choices and markings.</p>
+          </div>
+        </article>
+
+        <!-- CARD 2 — Social Story (the "velt": pages scroll VERTICALLY, numbered in order.
+             setupStoryBelt duplicates #storyBelt for a seamless loop; hover pauses.) -->
+        <article class="edu-card2">
+          <div class="edu-card2-media story-belt" aria-label="Listening and Learning at School — social story written by Jacqui Chait, illustrated by Elena Parr">
+            <ul class="story-belt-track" id="storyBelt">
+              <li class="story-page"><img src="assets/images/edu-social-story-1.webp" alt="Listening and Learning at School, page 1" loading="lazy"><span class="story-page-num">1</span></li>
+              <li class="story-page"><img src="assets/images/edu-social-story-2.webp" alt="Listening and Learning at School, page 2" loading="lazy"><span class="story-page-num">2</span></li>
+              <li class="story-page"><img src="assets/images/edu-social-story-3.webp" alt="Listening and Learning at School, page 3" loading="lazy"><span class="story-page-num">3</span></li>
+            </ul>
+          </div>
+          <h3 class="edu-card2-title">Social Story</h3>
+          <div class="edu-card2-copy">
+            <p>The emotion piece came right after partnering with the behavioral specialist to create a social story for my classroom when I was co-leading.</p>
+          </div>
+        </article>
+
+        <!-- RIGHT — the Stellina character (rigged from 7 same-canvas layers). Calm looping
+             idle: head sways, eyes blink, brows relax, mouth swaps happy↔neutral. The OPEN
+             eyes/mouth (`.rig-active`) fade OUT as the closed (`.rig-rest`) fade in, so the
+             swap is clean. Off under reduced motion. -->
+        <div class="edu-character" aria-hidden="true">
+          <div class="stellina-rig">
+            <img class="rig-layer" src="assets/images/stellina_body.png" alt="">
+            <div class="rig-head">
+              <img class="rig-layer" src="assets/images/stellina_head.png" alt="">
+              <img class="rig-layer rig-brows" src="assets/images/stellina_eyebrows.png" alt="">
+              <img class="rig-layer rig-active" src="assets/images/stellina_eyes_open.png" alt="">
+              <img class="rig-layer rig-rest" src="assets/images/stellina_eyes_closed.png" alt="">
+              <img class="rig-layer rig-active" src="assets/images/stellina_mouth_open.png" alt="">
+              <img class="rig-layer rig-rest" src="assets/images/stellina_mouth_closed.png" alt="">
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
   </section>
@@ -255,27 +291,14 @@
   <section class="section section--branding" id="branding">
     <div class="section-inner">
 
-      <!-- ===== IDENTITY WORK — logo lockup band (per Elena's Canva mockup 2026-08-02)
-           Curated to 3 logos that read as ONE family (rainbow/whimsical). Linda Gail
-           removed — its hard black rock-silhouette fought the set. No cells: the set
-           is cohesive enough to sit directly on the warm-white bg. -->
-      <!-- Auto-marquee experiment 2026-08-02: slow seamless loop (continuous, not
-           timed autoplay — fits the motion philosophy). JS duplicates #logoTrack
-           once; CSS scrolls -50% so the two identical halves loop seamlessly.
-           Hover pauses; off under reduced-motion. To revert to the static lockup:
-           unwrap .logo-marquee, restore .logo-band to space-between (see CSS note). -->
-      <div class="logo-marquee" aria-label="Brand identities">
-        <ul class="logo-band" id="logoTrack">
-          <li class="logo-band-item"><img src="assets/images/myriad_merch_logo.png" alt="Myriad Merch logo"></li>
-          <li class="logo-band-item"><img src="assets/images/brainbow-logo.webp" alt="Brainbow logo"></li>
-          <li class="logo-band-item"><img src="assets/images/stellina-logo.webp" alt="Stellina Mae logo"></li>
-        </ul>
-      </div>
+      <!-- Logo lockup band (Myriad · Brainbow · Stellina) removed 2026-08-03 (Elena's
+           call): it's identity work, orphaned atop a section now framed as Presentation.
+           Marquee JS (setupLogoMarquee) guards on the missing #logoTrack. Assets kept. -->
 
       <div class="branding-hero">
         <div class="branding-hero-copy">
-          <p class="eyebrow">04 — Branding &amp; Presentation</p>
-          <h2 class="section-title">Branding</h2>
+          <p class="eyebrow">04 — Presentation</p>
+          <h2 class="section-title">Presentation</h2>
           <p class="section-intro">Every presentation is an opportunity to tell a story. From brand identities to animated pitches, I bring the same illustrative voice to strategy work.</p>
         </div>
 
@@ -288,26 +311,30 @@
            (avconvert made them bigger; ffmpeg is the fix) + a good Nintendo
            poster frame. -->
       <div class="brand-block">
-        <h3 class="brand-block-title">Presentation &amp; pitch design</h3>
+        <h3 class="brand-block-title">Presentation &amp; pitch design <sup class="attr-mark" title="Non-commercial class projects; imagery is found/collaged reference, shown as design — not original illustration or client work. See note below.">★</sup></h3>
         <p class="brand-block-lead"><!-- NOTE FOR ELENA: one line — fast, story-driven decks; layout under pressure. Your words. --></p>
         <ul class="deck-row">
           <li class="deck-card">
             <video class="deck-video" controls preload="none" poster="assets/images/posters/poster-usm-pitch.png">
               <source src="assets/video/usm_pitch.mp4" type="video/mp4">
             </video>
-            <p class="deck-name">USM Pitch</p>
+            <p class="deck-name">USM A.I. Pitch Deck</p>
+            <!-- NOTE FOR ELENA: overview below is drawn from your description — refine/expand in your words. -->
+            <p class="deck-blurb">A pitch deck for a USM A.I. innovation &amp; sustainability competition.</p>
           </li>
           <li class="deck-card">
             <video class="deck-video" controls preload="none" poster="assets/images/posters/poster-nintendo.png">
               <source src="assets/video/college_class_nintendo_redesign_canva.mp4" type="video/mp4">
             </video>
             <p class="deck-name">Nintendo Redesign</p>
+            <p class="deck-blurb">A final redesign of the Nintendo brand.</p>
           </li>
           <li class="deck-card">
             <video class="deck-video" controls preload="none" poster="assets/images/posters/poster-daves-wings.png">
               <source src="assets/video/class_competition_canva_paigebueckers_x_daveshotwings.mp4" type="video/mp4">
             </video>
             <p class="deck-name">Paige Bueckers × Dave's Hot Wings</p>
+            <p class="deck-blurb">A campaign concept that took 1st place in my marketing class competition.</p>
           </li>
         </ul>
       </div>
@@ -345,13 +372,16 @@
          base of the page; clipped by the section's overflow:hidden = no white space. -->
     <div class="contact-meadow" id="contactMeadow" aria-hidden="true"></div>
     <!-- Footer merged in here so this section reaches the page base -->
-    <p class="contact-credit">&copy; <span id="year"></span> Elena Parr. Handmade, always.</p>
+    <div class="contact-footer-legal">
+      <p class="attr-legend"><!-- NOTE FOR ELENA: attribution note — refine the wording. --><span class="attr-mark">&#9733;</span> Items marked &#9733; aren&rsquo;t my original illustration — the children&rsquo;s artwork is the students&rsquo; own, and the presentation decks are non-commercial class projects using found &amp; collaged reference, shown as design/composition, not original art or client work.</p>
+      <p class="contact-credit">&copy; <span id="year"></span> Elena Parr. Handmade, always.</p>
+    </div>
   </section>
 
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/main.js?v=34"></script>
+<script src="js/main.js?v=64"></script>
 </body>
 </html>
