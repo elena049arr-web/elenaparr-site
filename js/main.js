@@ -352,6 +352,33 @@ if ('IntersectionObserver' in window) {
         }
       }
     }, { passive: false });
+
+    // Touch drag to spin (Elena's note: the wheel didn't move at all on mobile — touch
+    // devices fire no `wheel` events, so the handler above never ran). A horizontal drag
+    // rotates the ring; a vertical drag is left alone so the page still scrolls. We only
+    // decide the axis once per gesture (startX/startY), then lock to spinning if horizontal.
+    let startX = 0, startY = 0, lastX = 0, axis = null;
+    stage.addEventListener('touchstart', (e) => {
+      const t = e.touches[0];
+      startX = lastX = t.clientX; startY = t.clientY; axis = null;
+    }, { passive: true });
+    stage.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      if (axis === null) {
+        const dx = Math.abs(t.clientX - startX), dy = Math.abs(t.clientY - startY);
+        if (dx < 6 && dy < 6) return;          // wait for a decisive move
+        axis = dx > dy ? 'x' : 'y';
+      }
+      if (axis !== 'x') return;                 // vertical gesture → let the page scroll
+      if (e.cancelable) e.preventDefault();     // horizontal → we own it, don't scroll the page
+      const delta = lastX - t.clientX;          // drag left = advance the ring
+      lastX = t.clientX;
+      offset = (offset + delta * 0.55) % 360;
+      if (!ticking) {
+        requestAnimationFrame(() => { layout(); ticking = false; });
+        ticking = true;
+      }
+    }, { passive: false });
   }
 })();
 
@@ -673,15 +700,25 @@ if (window.gsap && !prefersReducedMotion) {
         body: "In 2022, I won first place in the Arrive Alive award in the painting category, put on annually by the law offices of Joe Bornstein for the state of Maine." } },
   ];
 
+  // Mobile scatter (≤760px, Elena's note): the desktop layout reads horizontal + small
+  // on a phone. These place the SAME stickers BIGGER, in a vertical zig-zag column down a
+  // taller board (board height bumped in CSS). Same {l,t,w,r} meaning as pos, indexed to
+  // match STICKERS above (founder, books, pitch, nonfiction, teacher, ai, arrive).
+  const MOBILE_POS = [
+    { l: 35, t: 19, w: 42, r: -4 },  // founder (crown)
+    { l: 67, t: 31, w: 33, r: 5 },   // published books
+    { l: 35, t: 44, w: 44, r: -3 },  // pitch (bear)
+    { l: 64, t: 56, w: 38, r: -10 }, // nonfiction (frame)
+    { l: 37, t: 68, w: 33, r: -5 },  // teacher (mermaid vase)
+    { l: 63, t: 80, w: 35, r: 4 },   // ai competition (dino)
+    { l: 43, t: 91, w: 23, r: -6 },  // arrive alive (paintbrush)
+  ];
+  const mqMobile = window.matchMedia('(max-width: 760px)');
+
   // --- render the stickers ---
-  STICKERS.forEach((s, i) => {
+  const items = STICKERS.map((s, i) => {
     const li = document.createElement('li');
     li.className = 'sticker';
-    const p = s.pos || { l: 50, t: 50, w: 16, r: 0 };
-    li.style.left = p.l + '%';
-    li.style.top = p.t + '%';
-    li.style.width = p.w + '%';
-    li.style.setProperty('--rot', (p.r || 0) + 'deg');
     const btn = document.createElement('button');
     btn.className = 'sticker-btn';
     btn.type = 'button';
@@ -693,7 +730,23 @@ if (window.gsap && !prefersReducedMotion) {
     label.textContent = s.label;
     li.append(btn, label);
     sheet.appendChild(li);
+    return { li, s, i };
   });
+
+  // place each sticker for the current breakpoint (re-runs on breakpoint change so a
+  // rotate/resize re-scatters cleanly). Inline styles win over CSS, so all layout lives here.
+  function placeStickers() {
+    const mobile = mqMobile.matches;
+    items.forEach(({ li, s, i }) => {
+      const p = (mobile && MOBILE_POS[i]) || s.pos || { l: 50, t: 50, w: 16, r: 0 };
+      li.style.left = p.l + '%';
+      li.style.top = p.t + '%';
+      li.style.width = p.w + '%';
+      li.style.setProperty('--rot', (p.r || 0) + 'deg');
+    });
+  }
+  placeStickers();
+  mqMobile.addEventListener('change', placeStickers);
 
   // --- popup wiring (same #achievementOverlay DOM; sticker pinned to the card) ---
   const overlay = document.getElementById('achievementOverlay');
@@ -971,7 +1024,11 @@ function revealHeroWriting() {
     meadow.appendChild(img);
   });
 
-  if (prefersReducedMotion) return; // static cluster, no rustle
+  // Mobile (Elena's note): "get rid of the flower animations." Touch has no cursor, so the
+  // piano-key proximity lift is meaningless there anyway — leave the meadow a static cluster
+  // (no rustle, no scroll parallax), same as the reduced-motion path.
+  const meadowMobile = window.matchMedia('(max-width: 760px)').matches;
+  if (prefersReducedMotion || meadowMobile) return; // static cluster, no rustle
 
   // measured centroid x (0..1) of each layer's artwork, so the "piano key" lift
   // follows the cursor to the actual plant under it (order matches LAYERS above)

@@ -509,7 +509,25 @@ p { margin: 0 0 var(--sp-2); }
 }
 
 @media (max-width: 700px) {
-  .hero-content { left: var(--sp-3); max-width: calc(100vw - 3rem); }
+  /* Mobile hero = a clean vertical STACK, not the desktop overlay. On desktop
+     .hero-content is position:absolute floating on top of the full-bleed sketch,
+     which cramped the title against the drawing (Elena's note). .hero-content is
+     the FIRST child in the DOM (sketch comes after), so switching it back into
+     normal flow makes the title block sit ABOVE the illustration — the letters
+     get their own space and the sketch drops below it. */
+  .hero-content {
+    position: relative;   /* in flow, but keep z-index above the bees */
+    z-index: 3;
+    top: auto;
+    left: auto;
+    width: auto;
+    max-width: 100%;
+    background: transparent;   /* no readability card needed once it's off the sketch */
+    padding: calc(72px + var(--sp-4)) var(--sp-4) var(--sp-3);
+  }
+  .hero-name { width: 100%; margin: 0 0 var(--sp-3); }
+  .hero-tagline { font-size: 0.9rem; max-width: none; }   /* smaller "multidisciplinary…" line */
+  .hero-bg-illustration { margin-top: var(--sp-1); }      /* sketch now sits below the title */
   .hero-writing { height: clamp(110px, 34vw, 180px); }
 }
 
@@ -652,7 +670,20 @@ p { margin: 0 0 var(--sp-2); }
 .about-books { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(var(--sp-4), 3.5vw, var(--sp-8)); align-items: start; }
 
 @media (max-width: 760px) {
-  .about-cols { grid-template-columns: 1fr; }
+  /* Chronological single column (Elena): dissolve the two brick-columns with display:contents
+     so all six items become direct grid items of .about-cols, then re-sequence them in TIME
+     order via `order`. The desktop masonry (the two independent .about-col stacks) is untouched.
+     Story order: intro'19 → books → MECA'21 → Buttons comic → Tampa'24 → Brainbow. */
+  .about-cols { grid-template-columns: 1fr; row-gap: clamp(var(--sp-4), 5vw, var(--sp-6)); }
+  .about-col { display: contents; }
+  .about-cols > .about-col:nth-child(1) > .about-text:nth-child(1)  { order: 1; }  /* intro · 2019 */
+  .about-cols > .about-col:nth-child(1) > .about-books             { order: 2; }  /* the two books */
+  .about-cols > .about-col:nth-child(2) > .about-text             { order: 3; }  /* MECA · 2021 */
+  .about-cols > .about-col:nth-child(2) > .about-card--wide       { order: 4; }  /* Buttons comic */
+  .about-cols > .about-col:nth-child(1) > .about-text:nth-child(3) { order: 5; }  /* Tampa · 2024 */
+  .about-cols > .about-col:nth-child(2) > .about-card--brainbow   { order: 6; }  /* Brainbow */
+  /* brainbow: drop the desktop bottom-align + width cap so it stacks full-width like the rest */
+  .about-card--brainbow { margin-top: 0; max-width: none; }
 }
 
 /* ---- Achievements: now its own warm-white section (split from Publications) ---- */
@@ -937,6 +968,13 @@ p { margin: 0 0 var(--sp-2); }
 .sticker-label { display: none; }   /* mockup has no visible labels; aria-label carries meaning */
 @media (prefers-reduced-motion: reduce) {
   .sticker-btn, .sticker-btn:hover, .sticker-btn:focus-visible { transform: none; }
+}
+/* Mobile: taller board so the stickers can go BIGGER + VERTICAL (Elena's note). The
+   scatter itself is set inline by setupStickerSheet's MOBILE_POS; here we just give the
+   board the height that column needs and lift the title block toward the crest top. */
+@media (max-width: 760px) {
+  .section--achievements .the-archive { height: clamp(940px, 250vw, 1140px); }
+  .section--achievements .archive-header { top: 6%; }
 }
 
 .the-archive-body {
@@ -1563,7 +1601,12 @@ p { margin: 0 0 var(--sp-2); }
   .rig-head, .rig-brows, .rig-active, .rig-rest, .rig-mouth-open, .rig-mouth-closed { animation: none; }
   .rig-active, .rig-mouth-open { opacity: 1; } .rig-rest, .rig-mouth-closed { opacity: 0; }   /* rest at eyes-open + mouth-open */
 }
-@media (max-width: 860px) { .edu-panel { grid-template-columns: 1fr; } }
+@media (max-width: 860px) {
+  .edu-panel { grid-template-columns: 1fr; }
+  /* Drop the Stellina character rig on mobile (Elena): stacked single-column it just
+     added a big empty gap under the two cards. The two story cards carry the section. */
+  .edu-character { display: none; }
+}
 
 /* =========================================================
    BRANDING
@@ -1719,6 +1762,27 @@ p { margin: 0 0 var(--sp-2); }
   padding: 0 var(--sp-3) var(--sp-3);
   margin: 0;
 }
+/* Mobile: swipeable "flashcard" carousel (Elena's note — quizlet-style swipe cards, NOT the
+   tilted Fine-Art pile). One deck per view via CSS scroll-snap; the ~14% peek of the next
+   card signals there's more to swipe to. No JS needed — native touch scrolling drives it. */
+@media (max-width: 760px) {
+  .deck-row {
+    display: flex;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: var(--sp-3);
+    padding: 0 var(--sp-2) var(--sp-2);
+    scrollbar-width: none;
+  }
+  .deck-row::-webkit-scrollbar { display: none; }
+  .deck-card {
+    flex: 0 0 86%;
+    scroll-snap-align: center;
+  }
+  .deck-card:hover { transform: none; box-shadow: var(--shadow-soft); }  /* no hover-lift on touch */
+}
 
 /* =========================================================
    STELLINA MAE
@@ -1842,6 +1906,14 @@ p { margin: 0 0 var(--sp-2); }
 }
 @media (max-width: 700px) {
   .stellina-viewer { width: 62%; left: 50%; }
+}
+/* Mobile crop (Elena's reference image): the 100vh full-screen scene cover-crops the
+   16:9 art hard on a portrait phone, cutting off the castle on the right. Drop the scene
+   to roughly the art's own aspect so the WHOLE composition — castle, train, sky — shows
+   full width. (~16:9 = 56vw; a touch taller keeps it immersive with only a sliver of crop
+   top/bottom, and the parallax's scale(1.12) bleed stays hidden.) */
+@media (max-width: 760px) {
+  .stellina-scene { height: 66vw; min-height: 260px; }
 }
 
 /* =========================================================
@@ -1974,6 +2046,9 @@ p { margin: 0 0 var(--sp-2); }
 
 @media (max-width: 760px) {
   .section-inner--contact { grid-template-columns: 1fr; }
+  /* Smaller on mobile so it reads as a proportioned pair of stretched words (like the
+     desktop) instead of two oversized lines crowding the screen (Elena's note). */
+  .contact-title { font-size: clamp(3.2rem, 17vw, 6rem); line-height: 0.9; }
 }
 
 /* =========================================================
