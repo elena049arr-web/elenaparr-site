@@ -37,9 +37,18 @@ The Canva mockup is a **structural and content** guide, not a pixel-perfect visu
 ## Design system
 
 - **Fonts (2 only — hard rule):** Bebas Neue (ALL headers — tall condensed caps, "bolded" via `-webkit-text-stroke` since Bebas ships one weight), Work Sans (body/subheads/UI). Passion One, Space Grotesk, and Fraunces were each tried and dropped — don't reintroduce. Cache-bust: css/js are linked with `?v=N` in index.html — bump N whenever css/js change so browsers fetch fresh.
-- **Colors:** WARM JEWEL palette, locked 2026-08-02 (see `:root` in `css/style.css`). Warm-white bg `#FBFAF7` (Porcelain), alternating-section bg `#F7F4F0` (Parchment — a barely-darker warm white; replaced the old `#F3ECE8` pink-gray that read as an ugly cool gray, 2026-08-02), Rich Mahogany ink `#421106`, Royal Plum `#76395D` (dark sections/buttons; `--color-plum-dark #5E2D4A` for button hover), Copperwood `#AE7222` (primary metallic accent — links), Lilac `#C69AB4` (decorative only, = lit-up plum), Bubblegum pink `#FF6DC4` (rare reward pop). Old CSS accent var names (`--color-accent-purple/gold/teal`) are kept as aliases remapped to the new palette; "teal" is retired (the crossword that held the last teal remnants is gone — replaced by the sticker sheet).
+- **Colors — ⚠ REPALETTED to AMETHYST (2026-08-05, session 8): plum → amethyst SITE-WIDE.** The `--color-*` variable NAMES are kept (so `--color-plum` etc. still work everywhere) but their VALUES changed. Current ramp (one hue, dark→light):
+  - **`--color-plum: #786BA0` Vintage Lavender** — the ANCHOR: nav, About/Contact backgrounds, buttons, section titles. ~4.6:1 with cream text (readable; the lighter `#887BAB` failed at 3.15, which is why we didn't use it as the anchor).
+  - **`--color-plum-deep: #3B2A51` Dark Amethyst** — deepest: hero sketch outline (`.hero-sketch-ink`) + the Contact footer "soil" band (was mahogany).
+  - `--color-plum-dark: #675A8C` (button hover) · `--color-plum-mauve: #574C77` (body copy on light).
+  - **`--color-lilac: #DECEF5` Thistle** — light accent: titles-on-dark, image "mat" cards, eyebrows.
+  - **Lavender `#F4ECFF`** — lightest: card tints + Stellina gradient bottom (hardcoded, replaced `#F1E6EF`).
+  - `--color-plum-smoke: #887BAB` Amethyst Smoke — mid-tone, **defined but currently UNUSED** (reserved; Elena's original pick, too light to be a surface).
+  - `--color-gold-pop: #DE962B` — bright orangey-gold, used for **achievement-popup titles** (`.achievement-title`). Eyeballed from Elena's swatch — confirm/adjust the hex.
+  - Backgrounds unchanged: warm-white `#FBFAF7` (Porcelain) + parchment `#F7F4F0`. **Warm holdovers that may want revisiting against the cool purples: copper `#AE7222` links + mahogany `#421106` base text (`--color-ink`).** Hero colour illustration is dialed to **80% opacity**. `hi_im` prefix asset → `hi_im_v2.png`. Grep confirmed NO old-plum hexes remain.
+  - _History (superseded 2026-08-05):_ WARM JEWEL palette, locked 2026-08-02 — Royal Plum `#76395D` anchor, `--color-plum-dark #5E2D4A`, Lilac `#C69AB4`, Bubblegum `#FF6DC4`. Old accent aliases (`--color-accent-purple/gold/teal`) still remapped; "teal" retired.
 - **Text colour scheme "C" (locked site-wide 2026-08-03):** every standard section header reads **lilac eyebrow (`--color-lilac`, intentionally faint — eyebrows are supplementary), plum title (`--color-plum`), plum-mauve body (`--color-plum-mauve #6E4A63`, a readable plum-family replacement for the too-light lilac)**. Set globally on `.eyebrow`/`.section-title`/`.section-intro` so any standard section inherits it; only override with an explicit approved colour (e.g. the inverted Publications section flips all of this to light). Copper (`--color-copper`) still = links.
-- **Nav/header is plum-themed (2026-08-03):** translucent plum bar, cream `#FBFAF7` logo, light-lilac `#E7C9DC` links, lilac `#C69AB4` "Let's Connect" pill with dark-plum label; mobile slide-in panel + hamburger also plum/cream. Leans into the inverted plum bookends (Publications top, Contact bottom).
+- **Nav/header is amethyst-themed (repaletted 2026-08-05):** translucent Vintage Lavender `rgba(120,107,160,.92)` bar, cream `#FBFAF7` logo, light links, Thistle `#DECEF5` "Let's Connect" pill with dark label; mobile slide-in panel + hamburger also amethyst/cream. Leans into the inverted amethyst bookends (About top, Contact bottom). (**Known-soft:** the light nav links + eyebrows sit ~3.2:1 on the lighter anchor — crisp to cream if Elena wants.)
 - **Spacing:** `--sp-1` (0.5rem) → `--sp-16` (8rem), 8px base
 - **Timing:** `--dur-fast: 0.3s`, `--ease-out: cubic-bezier(0.22, 1, 0.36, 1)`
 - **Radius:** `--radius-art: 30px`
@@ -71,7 +80,7 @@ Hero → **About** → **Achievements** (illustrated sticker sheet) → Fine Art
 - **Hero reveal is scroll-linked, not timed.** Progress computed live from scroll position, completing at `heroHeight * 0.5`. An earlier fixed-duration CSS transition version was rejected as "abrupt." An earlier, longer range was rejected because the wipe finished as the hero left the viewport, so nobody ever saw it happen.
 - **Hero video sequence:** erase clip holds on "Hi, I'm Elena Parr" for 3.5s → hands off to the "Nice to meet ya" write clip (`playbackRate = 1.1`) → freezes on last frame. Per-letter video files exist but are unused — ignore them.
 - **Hero illustration is absolutely positioned as a background layer**, not in document flow, so it fills the viewport behind the text instead of pushing it down.
-- **Hero sketch OUTLINE is plum (2026-08-03), not black.** The base line-art layer is a `<div class="hero-sketch-ink">` = a plum fill masked by `hero-sketch.png`'s alpha (`justify-self/align-self: stretch` so it fills the same grid cell as the colour `<img>` — a plain `width:100%` div collapsed to 0 under the parent's `justify-items:center`). Sits on top (z-index 1); the locked colour-reveal still washes colour in underneath it. Don't revert to the black `<img>`.
+- **Hero sketch OUTLINE is Dark Amethyst `#3B2A51` (`--color-plum-deep`, 2026-08-05; was plum), not black.** The base line-art layer is a `<div class="hero-sketch-ink">` = a solid fill masked by `hero-sketch.png`'s alpha (`justify-self/align-self: stretch` so it fills the same grid cell as the colour `<img>` — a plain `width:100%` div collapsed to 0 under the parent's `justify-items:center`). Sits on top (z-index 1); the locked colour-reveal still washes colour in underneath it. Don't revert to the black `<img>`.
 - **About (was "Publications") is an inverted plum "gallery" section (rebuilt 2026-08-03; renamed to About session 4).** Deep plum bg makes the near-white book covers pop; bookends the site with plum Contact (cream sections between). ALL text flips light here (scoped to `.section--publications` — class kept). Books + Overview now sit in a **2-column `.about-layout`**: books **left-flanked** (`justify-content:start`), Overview copy in a **right column** to balance them (pro working photos will join the left column later). The two front covers (`pub-pans-front`, `pub-ivory`) each get a CSS lilac offset card + `drop-shadow`. Section padding was **normalised to the standard 128/128** (session 4 — it had an odd 48/64 override, out of rhythm). Overview copy + a real About intro are **Elena's to write** (still placeholder in the right column).
 - **Fine Art is a still 3×2 grid** of the 6 charcoal/graphite studies — floating cards (no panel background) so the warm background shows around them. This **replaced** the old scrolling film-reel belt; the film-reel CSS/JS is now dead code left in place. (Doll swapped to a hi-res re-crop, `New-Cropped-Doll-Fine-Art.png`.) The rainbow ambient-light that used to glow behind this section was removed 2026-08-02.
 - **Presentation (was "Branding"; renamed + reworked session 4).** Framed as ART DIRECTION / FAST STORY-DRIVEN DESIGN, **not** illustration — deck imagery is found/collaged (Pinterest, bg-removed) + DZINE animation on non-commercial class projects, so it's shown as *design/composition*, never original art or client work. **The logo lockup band (Myriad · Brainbow · Stellina auto-marquee) was REMOVED** session 4 — it was identity work orphaned atop a section now about presentations (`setupLogoMarquee` guards the missing `#logoTrack`; assets kept). Section now = title/intro → **3 pitch-deck cards** as click-to-play videos (`<video preload="none">` so heavy MP4s never load until played), each with a **title + one-line overview** (from Elena's descriptions, marked to refine): **USM A.I. Pitch Deck** · **Nintendo Redesign** · **Paige Bueckers × Dave's Hot Wings** (1st place, marketing-class comp). Still Elena's to personalise + polish the overview copy.
@@ -105,7 +114,7 @@ Hero → **About** → **Achievements** (illustrated sticker sheet) → Fine Art
 
 **The local browser-preview pane runs at `viewportH: 0`.** That single fact explains most verification pain: `vh` units read as 0px, `scrollTo` does nothing, screenshots snap to the top, and rAF animations pause. It's a pane limitation, **not broken code** — verify viewport/scroll/animation behaviour structurally (computed styles, `fetch(...,{cache:'no-store'})` on the served file, canvas `getImageData` pixel measurement) and have Elena confirm the *feel* on her real browser. Measuring transparent-PNG content bounds via canvas (padding, centroids, density-per-row) was the key to positioning the meadow precisely.
 
-**Cache-busting / stale serving.** css/js are linked as `css/style.css?v=N` + `js/main.js?v=N`. **Bump N on every css/js change** or the preview — and Elena's deploy — serves stale files. This bit us repeatedly (missing flowers, un-run JS). Current version: **v=95**. (Note: **videos have NO ?v= cache-bust** — replacing an mp4 in place serves the browser-cached old one. Fix: give the new video a NEW filename and update the src. Bit us with the hero clips — see Traps.)
+**Cache-busting / stale serving.** css/js are linked as `css/style.css?v=N` + `js/main.js?v=N`. **Bump N on every css/js change** or the preview — and Elena's deploy — serves stale files. This bit us repeatedly (missing flowers, un-run JS). Current version: **v=101**. (Note: **videos have NO ?v= cache-bust** — replacing an mp4 in place serves the browser-cached old one. Fix: give the new video a NEW filename and update the src. Bit us with the hero clips — see Traps.)
 
 **Footer-outside-`#main` stacking.** To layer the meadow OVER the footer but BELOW the heading text, the clean fix was **merging the footer into the contact section** (making it the last element), not fighting z-index across the `#main`/`<footer>` boundary. Do **not** give `#main` a z-index (caused an earlier bug).
 
@@ -129,17 +138,17 @@ Hero → **About** → **Achievements** (illustrated sticker sheet) → Fine Art
 
 ## Deploy
 
-Elena deploys by hand. The process:
+**As of 2026-08-05 the site is LIVE on a custom domain, and deploy is now git-based** (Elena connected Vercel → the domain via Squarespace; Vercel auto-builds from GitHub `main`). The old "manually upload 5 files to the repo root" dance is **retired**.
 
-1. Delete the current contents of the GitHub repo root
-2. Drag in **5 items** from the unzipped folder — `index.html`, `css/`, `js/`, `assets/`, and `CLAUDE.md` — directly to the root, **not** the wrapper folder and **not** the zip
-3. Commit
+The process now:
+1. `git add -A && git commit -m "…"` (this folder IS the clone; `origin` = `github.com/elena049arr-web/elenaparr-site`, branch `main`).
+2. `git push origin main` → Vercel auto-builds → the live domain updates in ~a minute.
 
-**Replace all five every time.** Partial replaces have repeatedly served stale code: `css` and `js` change almost every session even when the work felt like it was "only about images."
-
-The real production URL is **`elenaparr-site.vercel.app`**. URLs with a random hash (`elenaparr-site-o3ftjdxj4-...`) are permanently frozen to one old deployment and never update — a common source of "why isn't my change showing up."
-
-For a one-line change like a filename swap, a **direct GitHub edit** (pencil icon → change the string → commit) is much safer than a full re-upload.
+**Gotchas:**
+- **Claude cannot push from this environment** (no cached GitHub creds / no `gh`). Elena pushes from her own Terminal / GitHub Desktop / VS Code. Claude commits are fine to prepare, but the push is hers.
+- **Always check `git status` + whether local `main` is ahead of `origin/main` before assuming something is live.** A committed-but-unpushed commit already bit us once (live site sat a version behind).
+- Still **bump `?v=N`** on css/js so the CDN/browsers fetch fresh (see Cache-busting). Replaced images/videos want a NEW filename for the same reason (no `?v=` on those).
+- URLs with a random hash (`…-o3ftjdxj4-….vercel.app`) are frozen to one old deployment — use the real domain, not a hash preview, to check "did my change ship."
 
 ---
 
@@ -183,10 +192,17 @@ For a one-line change like a filename swap, a **direct GitHub edit** (pencil ico
 - **Achievements title margin (2nd phone round)** — the `ACHIEVEMENTS` words were crammed against the crest top (same issue we'd fixed on desktop). `.archive-header` moved to `top:10%` on mobile (was 6%), board height bumped to `clamp(1000px,262vw,1200px)`, and the whole `MOBILE_POS` sticker column shifted down (first sticker `t:28`) so it still clears the lowered header. **Verified across 360 / 390 / 430 / 760px:** header always clears the first sticker, no sticker spills off the board edges, last sticker fits above the Fine-Art seam, and no page-level horizontal overflow (contact title, hero title, deck carousel all fit at 360). Good across all phone widths → the 760 breakpoint.
 - **Still uncommitted/undeployed** — local at v=95.
 
+**Done (session 8, 2026-08-05 — went LIVE, then polish + repalette, v=95 → v=101):**
+- **Site went live** on a custom domain (Vercel auto-builds from GitHub `main`, connected via Squarespace). Deploy is now `git push origin main` — see the rewritten Deploy section. (Caught a committed-but-unpushed commit that left the live site a version behind — always check `git status`/ahead-of-origin.)
+- **iOS video fix:** the 3 Presentation pitch `<video>`s wouldn't play on mobile — they were missing `playsinline`. Added `playsinline webkit-playsinline` to all three. (Files were fine: H.264/yuv420p/faststart. Confirm on a real iPhone.)
+- **Grammar:** "graduated Falmouth" → "graduated **from** Falmouth" in the About bio.
+- **REPALETTE plum → amethyst (the big one):** see the Colors section above for the full ramp + var mapping. Nav/About/Contact/buttons/titles → Vintage Lavender `#786BA0`; hero outline + footer soil → Dark Amethyst `#3B2A51`; Thistle/Lavender lights; achievement-popup titles → orangey-gold `#DE962B`. Hero colour illustration → 80% opacity. New `hi_im_v2.png` hero-prefix asset (Elena iterated it twice — first too dark). All via CSS vars, verified site-wide (mobile + desktop), no old-plum remnants.
+- **Preview note:** the mcp Browser pane kept FREEZING its repaint after JS-scrolls this session (screenshots went blank-white mid-page). Workaround that worked: hide the sections above the target (`.hero{display:none}`) so the target renders at the top without scrolling. Structural checks (computed styles, contrast math, `fetch` HTTP status) were the reliable path.
+
 **Known bugs, queued:** none currently.
 
-**Next up / not built yet (in priority order, end of session 7):**
-- **THE DEPLOY — now the immediate next task.** Still nothing live; local at **v=95**. A `git push` (real remote exists → Vercel auto-builds) or the manual 5-file upload. Waiting on Elena's go + her phone-check of the mobile pass.
+**Next up / not built yet (in priority order, end of session 8):**
+- **PUSH THE CURRENT LOCAL WORK.** The site is live but local `main` is **ahead of `origin/main`** — a big uncommitted/unpushed batch (v=95→v=101: repalette, footer, hero asset, video `playsinline` fix, grammar fix). Elena must `git push` to make it live. Claude can't push (no creds).
 - **Mobile pass follow-ups** (after Elena eyeballs it on her phone): confirm the **art-wheel swipe** feels right; nudge any sticker sizes/spacing, the "LET'S CONNECT" size, or carousel card width at real scale. (First phone-review round already handled: wheel spacing, sticker-sheet width, footer height, flowers removed.)
 - (Considered, not built:) arrows + a "1/3" counter on the mobile Presentation carousel to match the Fine-Art deck chrome — swipe + peek works without it; add only if Elena wants it.
 - Sticker-sheet **peel animation** (GSAP Flip) — deferred polish; sheet works great without it.
@@ -196,12 +212,13 @@ For a one-line change like a filename swap, a **direct GitHub edit** (pencil ico
 
 **Content boundary (IMPORTANT):** Elena writes **all** art and **all** copy herself — podcast scripts, educational/social-emotional text, achievement stories, section copy — and it's reviewed by education/behavioral specialists. Claude scaffolds structure/code, organizes/renames assets, and flags brand-consistency drift; use "NOTE FOR ELENA" placeholders, never generate the substance. When existing prior-Claude copy reads off (e.g. an old crossword clue), flag it — don't rewrite it.
 
-**Waiting on Elena (end of session 7):**
-- **Phone-check the mobile pass** — especially the **art-wheel swipe-to-spin** (couldn't fully simulate a touch-drag in the test browser). (Flowers-on-mobile: resolved — removed. Wheel spacing, sticker-sheet width, footer sizing: all adjusted per her phone review.)
-- Confirm 3 draft caption sub-lines that are still Claude's: **"MECA · 2021"** (Buttons comic), **"Brand identity"** (Brainbow), and the **footer attribution legend** wording.
-- Social handles (email set: `elenamaria.parr@gmail.com`; socials pending a third-party aggregator).
-- ✅ DONE now (were pending): mobile notes (received + acted on, session 7), About bio, Presentation deck copy, achievement stories, hero videos (scrapped).
-- **THE DEPLOY** — local at v=95; a `git push` or the manual 5-file upload is the only thing between here and a sendable link.
+**Waiting on Elena (end of session 8):**
+- **`git push origin main`** to ship the v=101 batch (repalette + video fix + grammar fix + new hero asset) — the live domain is a batch behind until she does.
+- **Phone-check:** the **art-wheel swipe-to-spin** and the **iOS video playback** (`playsinline` fix) on a real iPhone.
+- Confirm the eyeballed **achievement-title gold `#DE962B`** and decide the two palette loose-ends: crisp the soft nav links, and whether to place/retire **Amethyst Smoke `#887BAB`**.
+- Confirm 3 draft caption sub-lines still Claude's: **"MECA · 2021"** (Buttons comic), **"Brand identity"** (Brainbow), and the **footer attribution legend** wording.
+- Social handles (email set: `elenamaria.parr@gmail.com`; socials pending an aggregator).
+- Favicon (still pending, "another day").
 
 **Bigger picture:** Elena is building a larger business (podcast w/ recorded music + products, newsletter, multi-platform video). Claude can help beyond this site — copy, launch/marketing planning, landing pages, asset organization — but that's a **separate project → separate chat/folder**. Not art or podcast/educational writing (hers).
 

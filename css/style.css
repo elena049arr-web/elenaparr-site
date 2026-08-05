@@ -15,11 +15,14 @@
   --color-ink-soft: #5A4A44;  /* warm brown-grey — body copy */
 
   /* Named brand accents */
-  --color-plum: #76395D;      /* Royal Plum — dark sections, buttons, bold colour moments */
-  --color-plum-dark: #5E2D4A; /* darkened plum for button hover/pressed states */
-  --color-plum-mauve: #6E4A63; /* readable plum-family body text (lilac is too light to read) */
+  --color-plum: #786BA0;      /* Vintage Lavender — main purple ANCHOR: nav, dark sections, buttons, titles (Elena's pick; ~4.7:1 w/ cream text) */
+  --color-plum-smoke: #887BAB;/* Amethyst Smoke — lighter mid-tone in the purple ramp (kept for gradients/accents) */
+  --color-plum-dark: #675A8C; /* darker Vintage Lavender for button hover/pressed states */
+  --color-plum-deep: #3B2A51; /* Dark Amethyst — deepest: hero sketch outline + fine ink details (Elena) */
+  --color-plum-mauve: #574C77; /* readable amethyst-family body text on light (lilac is too light to read) */
   --color-copper: #AE7222;    /* Copperwood — PRIMARY metallic accent: links, underlines */
-  --color-lilac: #C69AB4;     /* decorative only (too light for text) — it's lit-up plum */
+  --color-gold-pop: #DE962B;  /* bright orangey-gold — achievement popup titles (Elena; eyeballed from swatch) */
+  --color-lilac: #DECEF5;     /* decorative only (too light for text) — it's lit-up plum */
   /* (Bubblegum-as-primary was tested 2026-08-04 and dropped — see the
      bubblegum-accent-not-primary memory. The --color-pop token was unused, removed.) */
 
@@ -175,13 +178,13 @@ p { margin: 0 0 var(--sp-2); }
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(118, 57, 93, 0.92); /* Royal Plum, translucent — leans into the inverted theme */
+  background: rgba(120, 107, 160, 0.92); /* Royal Plum, translucent — leans into the inverted theme */
   backdrop-filter: blur(8px);
   border-bottom: 1px solid transparent;
   transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
 .site-header.is-scrolled {
-  border-bottom-color: rgba(198, 154, 180, 0.35); /* faint lilac hairline */
+  border-bottom-color: rgba(222, 206, 245, 0.35); /* faint lilac hairline */
   box-shadow: 0 4px 16px rgba(30, 8, 20, 0.18);
 }
 .header-inner {
@@ -293,6 +296,8 @@ p { margin: 0 0 var(--sp-2); }
 /* Line art is explicitly kept above the colour layer — no longer relying on
    DOM paint order or a grayscale-filter stacking context (which was removed). */
 .hero-bg-illustration img:not(.hero-sketch-color) { z-index: 1; }
+/* Elena: soften the colour illustration (80%) */
+.hero-bg-illustration img.hero-sketch-color { opacity: 0.8; }
 /* Plum outline layer (2026-08-03): replaces the black line-art <img>. A plum
    fill masked by the sketch's alpha — keeps the charcoal texture but in plum.
    Sits on top (z-index 1) so the colour reveal still washes in underneath. */
@@ -303,7 +308,7 @@ p { margin: 0 0 var(--sp-2); }
                                    div has 0 content width, so width:100% alone collapsed) */
   align-self: stretch;
   z-index: 1;
-  background: var(--color-plum);
+  background: var(--color-plum-deep);
   -webkit-mask: url('../assets/images/hero-sketch.png') center / 100% 100% no-repeat;
           mask: url('../assets/images/hero-sketch.png') center / 100% 100% no-repeat;
 }
@@ -558,7 +563,7 @@ p { margin: 0 0 var(--sp-2); }
 .section--publications .pub-card-spine-title,
 .section--publications .pub-card-spine-year { color: #D9C2D2; }
 .section--publications .pub-card-media,
-.section--publications .pub-card-footer { border-color: rgba(198, 154, 180, 0.55); } /* lilac datum lines */
+.section--publications .pub-card-footer { border-color: rgba(222, 206, 245, 0.55); } /* lilac datum lines */
 .section--publications a { color: var(--color-lilac); }
 
 /* ---- Publications 3-up books (2026-08-03): trimmed transparent covers on plum,
@@ -705,7 +710,7 @@ p { margin: 0 0 var(--sp-2); }
    lilac eyebrow, plum title, plum-mauve body — across all standard sections +
    Stellina. The earlier Branding-scoped gold-eyebrow override was removed. */
 .section--stellina {
-  background: linear-gradient(180deg, var(--color-bg) 0%, #F1E6EF 100%);
+  background: linear-gradient(180deg, var(--color-bg) 0%, #F4ECFF 100%);
   text-align: center;
   padding-bottom: 0; /* the full-screen scene flows straight into Contact — no gap */
 }
@@ -1176,7 +1181,7 @@ p { margin: 0 0 var(--sp-2); }
   align-items: center;
   justify-content: center;
   padding: var(--sp-4);
-  background: rgba(118, 57, 93, 0.55); /* plum-lilac backdrop (was a dark scrim) — 2026-08-03 */
+  background: rgba(120, 107, 160, 0.55); /* plum-lilac backdrop (was a dark scrim) — 2026-08-03 */
   backdrop-filter: blur(4px);
   opacity: 0;
   pointer-events: none;
@@ -1248,7 +1253,7 @@ p { margin: 0 0 var(--sp-2); }
   font-family: var(--font-display);
   text-transform: uppercase;
   font-size: 2rem;
-  color: var(--color-plum);
+  color: var(--color-gold-pop); /* orangey-gold pop (Elena) — was amethyst */
   margin-bottom: var(--sp-3);
 }
 .achievement-image {
@@ -1752,7 +1757,7 @@ p { margin: 0 0 var(--sp-2); }
   gap: var(--sp-4);
 }
 .deck-card {
-  background: #F1E6EF; /* light lilac (the Stellina gradient tone) — was near-white (Elena 2026-08-04) */
+  background: #F4ECFF; /* light lilac (the Stellina gradient tone) — was near-white (Elena 2026-08-04) */
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-soft);
   overflow: hidden;
@@ -1950,7 +1955,7 @@ p { margin: 0 0 var(--sp-2); }
   position: absolute;
   left: 0; right: 0; bottom: 0;
   height: clamp(80px, 9vw, 140px); /* scales with the meadow so the soil always reaches the flower body — no gap */
-  background: var(--color-ink);
+  background: var(--color-plum-deep); /* dark amethyst footer soil (Elena) — was mahogany ink */
   z-index: 0; /* behind the flowers (z-index 1) and the copy (z-index 2) */
 }
 .section-inner--contact {
